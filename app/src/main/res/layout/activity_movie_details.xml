@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/description_sv"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".MovieDetailsActivity">
+
+
+    <LinearLayout
+        android:id="@+id/central_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_movie_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:textColor="#222"
+            android:textSize="24sp"
+            tools:text="Zootopia" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="192dp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:alpha=".25"
+                android:background="@android:color/background_light"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/backdrop" />
+
+            <ImageView
+                android:id="@+id/iv_poster"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:adjustViewBounds="true"
+                android:paddingLeft="16dp"
+                app:srcCompat="@drawable/poster_185" />
+
+            <TextView
+                android:id="@+id/tv_movie_release_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/iv_poster"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="40dp"
+                android:layout_toEndOf="@+id/iv_poster"
+                android:textColor="@color/primary_text"
+                android:textSize="24sp"
+                android:textStyle="italic"
+                android:typeface="monospace"
+                tools:text="2016" />
+
+            <TextView
+                android:id="@+id/tv_vote_average"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tv_movie_release_year"
+                android:layout_below="@+id/tv_movie_release_year"
+                android:layout_marginTop="24dp"
+                android:textColor="@color/primary_text"
+                tools:text="Rating - 7.7/10" />
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/secondary_text"
+            tools:text="Determined to prove herself, Officer Judy Hopps, the first bunny on Zootopia's police force, jumps at the chance to crack her first case - even if it means partnering with scam-artist fox Nick Wilde to solve the mystery." />
+
+    </LinearLayout>
+
+
+</ScrollView>
