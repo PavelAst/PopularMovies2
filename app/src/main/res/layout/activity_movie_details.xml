@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/description_sv"
     android:layout_width="match_parent"
@@ -38,7 +37,7 @@
                 android:alpha=".25"
                 android:background="@android:color/background_light"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/backdrop" />
+                tools:srcCompat="@drawable/backdrop" />
 
             <ImageView
                 android:id="@+id/iv_poster"
@@ -48,7 +47,7 @@
                 android:layout_centerVertical="true"
                 android:adjustViewBounds="true"
                 android:paddingLeft="16dp"
-                app:srcCompat="@drawable/poster_185" />
+                tools:srcCompat="@drawable/poster_185" />
 
             <TextView
                 android:id="@+id/tv_movie_release_year"
