@@ -1,8 +1,9 @@
 package com.world.udacity.android.popularmovies;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class MovieItem implements Serializable {
+public class MovieItem implements Parcelable {
 
     private int mId;
     private String mTitle;
@@ -34,6 +35,46 @@ public class MovieItem implements Serializable {
         mOverview = overview;
         mReleaseDate = releaseDate;
         mRuntime = runtime;
+    }
+
+    protected MovieItem(Parcel in) {
+        mId = in.readInt();
+        mTitle = in.readString();
+        mVoteAverage = in.readDouble();
+        mPosterPath = in.readString();
+        mBackdropPath = in.readString();
+        mOverview = in.readString();
+        mReleaseDate = in.readString();
+        mRuntime = in.readInt();
+    }
+
+    public static final Creator<MovieItem> CREATOR = new Creator<MovieItem>() {
+        @Override
+        public MovieItem createFromParcel(Parcel in) {
+            return new MovieItem(in);
+        }
+
+        @Override
+        public MovieItem[] newArray(int size) {
+            return new MovieItem[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(mId);
+        out.writeString(mTitle);
+        out.writeDouble(mVoteAverage);
+        out.writeString(mPosterPath);
+        out.writeString(mBackdropPath);
+        out.writeString(mOverview);
+        out.writeString(mReleaseDate);
+        out.writeInt(mRuntime);
     }
 
     public int getId() {
