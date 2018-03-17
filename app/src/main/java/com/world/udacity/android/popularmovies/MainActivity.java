@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,12 +24,19 @@ import com.world.udacity.android.popularmovies.utils.Most;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements
+        MovieAdapterOnClickHandler,
+        LoaderCallbacks<List<MovieItem>> {
 
     // Turn logging on or off
-    private static final boolean L = false;
+    private static final boolean L = true;
 
     private static final String TAG = "MovieMainActivity";
+    /* A constant to save and restore the page  */
+    public static final String SEARCH_QUERY_PAGE = "query_page";
+    public static final String SEARCH_QUERY_SORT = "query_sort";
+
+    private static final int MOVIE_LOADER_ID = 64;
 
     private RecyclerView mMoviesRecyclerView;
     private ProgressBar mLoadingIndicator;
@@ -56,12 +65,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mMovieAdapter = new MovieAdapter(this);
         mMoviesRecyclerView.setAdapter(mMovieAdapter);
 
-        if (isOnline()) {
-            loadMovieItemsData();
-        } else {
-            showErrorMessage(R.string.error_message_network);
-        }
-
         mMoviesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -70,27 +73,56 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
                 mX = dx;
                 mY = dy;
 
                 GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
                 mFirstVisibleItemPosition = gridLayoutManager.findLastCompletelyVisibleItemPosition();
+                int itemsCount = gridLayoutManager.getItemCount();
 
-                // if (L) Log.i(TAG, "=== onScrolled ===" + mLastPage + " dx=" + dx + ", dy=" + dy);
-                if (!recyclerView.canScrollVertically(1)) {
-                    if (L) Log.i(TAG, "~~~ I can't !!! ~~~");
+                if (!recyclerView.canScrollVertically(1) && itemsCount > 0) {
                     mLastPage += 1;
-                    new FetchMoviesTask().execute(mLastPage);
+                    if (L)
+                        Log.i(TAG, "** " + itemsCount + " In onScrolled, mLastPage = " + mLastPage);
+                    loadMovieItemsData();
                 }
             }
         });
+
+        /*
+         * From MainActivity, we have implemented the LoaderCallbacks interface with the type of
+         * String array. (implements LoaderCallbacks<String[]>) The variable callback is passed
+         * to the call to initLoader below. This means that whenever the loaderManager has
+         * something to notify us of, it will do so through this callback.
+         */
+        LoaderCallbacks<List<MovieItem>> callback = MainActivity.this;
+
+        /*
+         * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
+         * created and (if the activity/fragment is currently started) starts the loader. Otherwise
+         * the last created loader is re-used.
+         */
+        getSupportLoaderManager().initLoader(MOVIE_LOADER_ID, null, callback);
+
+        loadMovieItemsData();
     }
 
+
     private void loadMovieItemsData() {
+        if (!isOnline()) {
+            showErrorMessage(R.string.error_message_network);
+            return;
+        }
+        if (L) Log.i(TAG, "** In loadMovieItemsData, mLastPage = " + mLastPage);
+
         showMovieItemsView();
-        new FetchMoviesTask().execute(mLastPage);
+
+        Bundle queryBundle = new Bundle();
+        queryBundle.putInt(SEARCH_QUERY_PAGE, mLastPage);
+        queryBundle.putSerializable(SEARCH_QUERY_SORT, mSortOption);
+
+        LoaderManager loaderManager = getSupportLoaderManager();
+        loaderManager.restartLoader(MOVIE_LOADER_ID, queryBundle, this);
     }
 
     private void setupAdapter(List<MovieItem> items) {
@@ -122,33 +154,34 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
         mErrorMessageDisplay.setText(resid);
     }
 
-    private class FetchMoviesTask extends AsyncTask<Integer, Void, List<MovieItem>> {
+    @Override
+    public Loader<List<MovieItem>> onCreateLoader(int id, final Bundle loaderArgs) {
+        return new AppListLoader(this, loaderArgs);
+    }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
+    @Override
+    public void onLoadFinished(Loader<List<MovieItem>> loader, List<MovieItem> data) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+
+        if (null == data) {
+            showErrorMessage(R.string.error_message_all);
+        } else {
+            showMovieItemsView();
+            setupAdapter(data);
         }
+    }
 
-        @Override
-        protected List<MovieItem> doInBackground(Integer... params) {
-            if (params.length == 0) {
-                return null;
-            }
-            return new MovieFetchr().fetchItems(mSortOption, params[0]);
-        }
+    @Override
+    public void onLoaderReset(Loader<List<MovieItem>> loader) {
 
-        @Override
-        protected void onPostExecute(List<MovieItem> items) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
+    }
 
-            if (items != null) {
-                showMovieItemsView();
-                setupAdapter(items);
-            } else {
-                showErrorMessage(R.string.error_message_all);
-            }
-        }
+    /**
+     * This method is used when we are resetting data, so that at one point in time during a
+     * refresh of our data, you can see that there is no data showing.
+     */
+    private void invalidateData() {
+        setupAdapter(null);
     }
 
     protected boolean isOnline() {
@@ -178,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
             mFirstVisibleItemPosition = 0;
             mX = 0;
             mY = 0;
-            setupAdapter(null);
+            invalidateData();
             loadMovieItemsData();
 
             return true;

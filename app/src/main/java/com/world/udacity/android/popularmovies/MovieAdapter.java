@@ -80,8 +80,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             mMovieItems = movieItems;
         } else {
             mMovieItems.addAll(movieItems);
-            notifyDataSetChanged();
         }
-
+        notifyDataSetChanged();
     }
 }
