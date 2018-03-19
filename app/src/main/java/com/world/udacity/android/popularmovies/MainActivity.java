@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.world.udacity.android.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
 import com.world.udacity.android.popularmovies.utils.Most;
 
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Fresco.initialize(this);
+
         setContentView(R.layout.activity_main);
 
         mMoviesRecyclerView = findViewById(R.id.movies_recycler_view);

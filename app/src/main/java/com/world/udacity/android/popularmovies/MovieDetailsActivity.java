@@ -3,10 +3,9 @@ package com.world.udacity.android.popularmovies;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -14,8 +13,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public static final String MOVIE_ITEM = "movie_item_object";
 
     private TextView mMovieTitleTV;
-    private ImageView mBackdropIV;
-    private ImageView mPosterIV;
+    private SimpleDraweeView mBackdropIV;
+    private SimpleDraweeView mPosterIV;
     private TextView mMovieReleleaseYearTV;
     private TextView mVoteAverageTV;
     private TextView mOverviewTV;
@@ -40,15 +39,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         mBackdropIV = findViewById(R.id.iv_backdrop);
         String backdropUrl = TheMoviedbConstants.getPosterUrl("w780", mMovie.getBackdropPath());
-        Picasso.with(this)
-                .load(backdropUrl)
-                .into(mBackdropIV);
+        mBackdropIV.setImageURI(backdropUrl);
 
         mPosterIV = findViewById(R.id.iv_poster);
         String posterUrl = TheMoviedbConstants.getPosterUrl("w342", mMovie.getPosterPath());
-        Picasso.with(this)
-                .load(posterUrl)
-                .into(mPosterIV);
+        mPosterIV.setImageURI(posterUrl);
 
         mMovieReleleaseYearTV = findViewById(R.id.tv_movie_release_year);
         mMovieReleleaseYearTV.setText(mMovie.getReleaseYear());
