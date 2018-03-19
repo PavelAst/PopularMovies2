@@ -12,10 +12,12 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements
     /* A constant to save and restore the page  */
     public static final String SEARCH_QUERY_PAGE = "query_page";
     public static final String SEARCH_QUERY_SORT = "query_sort";
+    private static final int COLUMN_WIDTH = 180;
 
     private static final int MOVIE_LOADER_ID = 64;
 
@@ -92,6 +95,25 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
+
+        mMoviesRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        float columnWidthInPixels = TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                COLUMN_WIDTH,
+                                MainActivity.this.getResources().getDisplayMetrics());
+                        int width = mMoviesRecyclerView.getWidth();
+                        int columnNumber = Math.round(width / columnWidthInPixels);
+                        mMoviesRecyclerView.setLayoutManager(
+                                new GridLayoutManager(MainActivity.this, columnNumber));
+                        mMoviesRecyclerView.scrollToPosition(mFirstVisibleItemPosition);
+                        mMoviesRecyclerView
+                                .getViewTreeObserver()
+                                .removeOnGlobalLayoutListener(this);
+                    }
+                });
 
         /*
          * From MainActivity, we have implemented the LoaderCallbacks interface with the type of
