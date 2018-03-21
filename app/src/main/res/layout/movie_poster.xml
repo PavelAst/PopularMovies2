@@ -10,7 +10,7 @@
         android:id="@+id/poster_image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        fresco:fadeDuration="200"
+        fresco:fadeDuration="100"
         fresco:placeholderImage="@drawable/poster_placeholder"
         fresco:viewAspectRatio="0.665" />
 

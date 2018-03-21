@@ -223,6 +223,10 @@ public class MainActivity extends AppCompatActivity implements
         MenuInflater inflater = getMenuInflater();
         /* Use the inflater's inflate method to inflate our menu layout to this menu */
         inflater.inflate(R.menu.main_menu, menu);
+
+        MenuItem firstItem = menu.findItem(R.id.action_most_popular);
+        firstItem.setChecked(true);
+
         /* Return true so that the menu is displayed in the Toolbar */
         return true;
     }
@@ -232,6 +236,12 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.action_most_popular || id == R.id.action_most_top_rated) {
+            if (item.isChecked()) {
+                item.setChecked(false);
+            } else {
+                item.setChecked(true);
+            }
+
             mSortOption = (id == R.id.action_most_popular) ? Most.POPULAR : Most.TOP_RATED;
             mLastPage = 1;
             mFirstVisibleItemPosition = 0;
