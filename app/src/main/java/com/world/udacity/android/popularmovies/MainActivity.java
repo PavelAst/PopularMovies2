@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.world.udacity.android.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
 import com.world.udacity.android.popularmovies.utils.Most;
+import com.world.udacity.android.popularmovies.utils.SortPreferences;
 
 import java.util.List;
 
@@ -51,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements
     private int mFirstVisibleItemPosition = 0;
     private int mX = 0;
     private int mY = 0;
-    private Most mSortOption = Most.POPULAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,9 +143,10 @@ public class MainActivity extends AppCompatActivity implements
 
         showMovieItemsView();
 
+        Most sortOption = SortPreferences.getSortCriteria(this);
         Bundle queryBundle = new Bundle();
         queryBundle.putInt(SEARCH_QUERY_PAGE, mLastPage);
-        queryBundle.putSerializable(SEARCH_QUERY_SORT, mSortOption);
+        queryBundle.putSerializable(SEARCH_QUERY_SORT, sortOption);
 
         LoaderManager loaderManager = getSupportLoaderManager();
         loaderManager.restartLoader(MOVIE_LOADER_ID, queryBundle, this);
@@ -225,8 +226,10 @@ public class MainActivity extends AppCompatActivity implements
         /* Use the inflater's inflate method to inflate our menu layout to this menu */
         inflater.inflate(R.menu.main_menu, menu);
 
-        MenuItem firstItem = menu.findItem(R.id.action_most_popular);
-        firstItem.setChecked(true);
+        Most sortOption = SortPreferences.getSortCriteria(this);
+        MenuItem menuItem = (sortOption == Most.POPULAR) ?
+                menu.findItem(R.id.action_most_popular) : menu.findItem(R.id.action_most_top_rated);
+        menuItem.setChecked(true);
 
         /* Return true so that the menu is displayed in the Toolbar */
         return true;
@@ -237,13 +240,21 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.action_most_popular || id == R.id.action_most_top_rated) {
+            Most sortOption = SortPreferences.getSortCriteria(this);
+
+            // The same option was chosen
+            if ((sortOption == Most.POPULAR && id == R.id.action_most_popular) ||
+                    (sortOption == Most.TOP_RATED && id == R.id.action_most_top_rated)) {
+                return true;
+            }
+
             if (item.isChecked()) {
                 item.setChecked(false);
             } else {
                 item.setChecked(true);
             }
-
-            mSortOption = (id == R.id.action_most_popular) ? Most.POPULAR : Most.TOP_RATED;
+            sortOption = (id == R.id.action_most_popular) ? Most.POPULAR : Most.TOP_RATED;
+            SortPreferences.setSortCriteria(this, sortOption);
             mLastPage = 1;
             mFirstVisibleItemPosition = 0;
             mX = 0;
