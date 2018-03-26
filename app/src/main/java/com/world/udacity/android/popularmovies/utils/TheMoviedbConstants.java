@@ -8,7 +8,7 @@ import com.world.udacity.android.popularmovies.BuildConfig;
 public class TheMoviedbConstants {
 
     // Turn logging on or off
-    private static final boolean L = true;
+    private static final boolean L = false;
 
     private static final String TAG = "MovieConstants";
 

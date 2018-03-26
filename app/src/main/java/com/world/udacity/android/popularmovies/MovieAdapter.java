@@ -13,6 +13,7 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
+    private final Context mContext;
     private List<MovieItem> mMovieItems;
 
     private final MovieAdapterOnClickHandler mClickHandler;
@@ -21,7 +22,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         void onClick(MovieItem movie);
     }
 
-    public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
+    public MovieAdapter(Context context, MovieAdapterOnClickHandler clickHandler) {
+        mContext = context;
         mClickHandler = clickHandler;
     }
 
@@ -52,8 +54,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context context = viewGroup.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.movie_poster,
+        View view = LayoutInflater.from(mContext).inflate(R.layout.movie_poster,
                 viewGroup, false);
 
         return new MovieViewHolder(view);

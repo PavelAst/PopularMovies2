@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements
         LoaderCallbacks<List<MovieItem>> {
 
     // Turn logging on or off
-    private static final boolean L = true;
+    private static final boolean L = false;
 
     private static final String TAG = "MovieMainActivity";
     /* A constant to save and restore the page  */
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements
         GridLayoutManager layoutManager = new GridLayoutManager(this, numberOfColumns);
         mMoviesRecyclerView.setLayoutManager(layoutManager);
 
-        mMovieAdapter = new MovieAdapter(this);
+        mMovieAdapter = new MovieAdapter(this, this);
         mMoviesRecyclerView.setAdapter(mMovieAdapter);
 
         mMoviesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public Loader<List<MovieItem>> onCreateLoader(int id, final Bundle loaderArgs) {
+        Log.i(TAG, "<> In onCreateLoader");
         return new AppListLoader(this, loaderArgs);
     }
 
