@@ -184,7 +184,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public Loader<List<MovieItem>> onCreateLoader(int id, final Bundle loaderArgs) {
         Log.i(TAG, "<> In onCreateLoader");
-        return new AppListLoader(this, loaderArgs);
+        return new AppListLoader(this, loaderArgs, new AppListLoader.LoaderOnStartHandler() {
+            @Override
+            public void onLoad(boolean start) {
+                mLoadingIndicator.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

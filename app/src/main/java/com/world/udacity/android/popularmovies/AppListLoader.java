@@ -13,14 +13,19 @@ import java.util.List;
  */
 public class AppListLoader extends AsyncTaskLoader<List<MovieItem>> {
 
+    public interface LoaderOnStartHandler {
+        void onLoad(boolean start);
+    }
+
     private Bundle mArgs;
-    //        private ProgressBar mProgressBar;
+    private final LoaderOnStartHandler mOnStartHandler;
 
-    List<MovieItem> mMovieItems = null;
+    private List<MovieItem> mMovieItems = null;
 
-    public AppListLoader(Context context, Bundle args) {
+    public AppListLoader(Context context, Bundle args, LoaderOnStartHandler onStartHandler) {
         super(context);
         mArgs = args;
+        mOnStartHandler = onStartHandler;
     }
 
     @Override
@@ -32,7 +37,9 @@ public class AppListLoader extends AsyncTaskLoader<List<MovieItem>> {
         if (mMovieItems != null) {
             deliverResult(mMovieItems);
         } else {
-//            mProgressBar.setVisibility(View.VISIBLE);
+            if (mOnStartHandler != null) {
+                mOnStartHandler.onLoad(true);
+            }
             forceLoad();
         }
     }
