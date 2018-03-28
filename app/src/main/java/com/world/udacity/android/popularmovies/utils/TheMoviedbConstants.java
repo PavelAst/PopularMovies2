@@ -20,6 +20,8 @@ public class TheMoviedbConstants {
     private static final String MOVIE_SEGMENT = "movie";
     private static final String POPULAR_SEGMENT = "popular";
     private static final String TOP_RATED_SEGMENT = "top_rated";
+    private static final String VIDEOS_SEGMENT = "videos";
+    private static final String REVIEWS_SEGMENT = "reviews";
     private static final String API_KEY_PARAM = "api_key";
     private static final String PAGE_PARAM = "page";
     private static final String LANGUAGE_PARAM = "language";
@@ -44,6 +46,41 @@ public class TheMoviedbConstants {
                 .appendEncodedPath(path)
                 .build();
         if (L) Log.i(TAG, "getPosterUrl - " + builtUri.toString());
+        return builtUri.toString();
+    }
+
+    //    https://api.themoviedb.org/3/movie/181808?api_key=API_KEY
+    public static String getMovieInfoUrl(int id) {
+        Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
+                .appendEncodedPath(MOVIE_SEGMENT)
+                .appendEncodedPath(Integer.toString(id))
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .build();
+        if (L) Log.i(TAG, "getMovieInfoUrl - " + builtUri.toString());
+        return builtUri.toString();
+    }
+
+    //    https://api.themoviedb.org/3/movie/181808/videos?api_key=API_KEY
+    public static String getTrailersUrl(int id) {
+        Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
+                .appendEncodedPath(MOVIE_SEGMENT)
+                .appendEncodedPath(Integer.toString(id))
+                .appendEncodedPath(VIDEOS_SEGMENT)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .build();
+        if (L) Log.i(TAG, "getTrailersUrl - " + builtUri.toString());
+        return builtUri.toString();
+    }
+
+    //    https://api.themoviedb.org/3/movie/181808/reviews?api_key=API_KEY
+    public static String getReviewsUrl(int id) {
+        Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
+                .appendEncodedPath(MOVIE_SEGMENT)
+                .appendEncodedPath(Integer.toString(id))
+                .appendEncodedPath(REVIEWS_SEGMENT)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .build();
+        if (L) Log.i(TAG, "getReviewsUrl - " + builtUri.toString());
         return builtUri.toString();
     }
 
