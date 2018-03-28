@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    fresco:cardBackgroundColor="@android:color/background_dark">
+    fresco:cardBackgroundColor="@color/colorPrimaryLight">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/poster_image_view"
