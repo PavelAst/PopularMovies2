@@ -14,4 +14,6 @@
     </string>
 
     <string name="rating_string">Rating - %.1f/10</string>
+    <string name="title_activity_movie_detail">MovieDetailsActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>
