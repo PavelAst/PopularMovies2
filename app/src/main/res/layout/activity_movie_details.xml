@@ -28,8 +28,8 @@
                 android:id="@+id/iv_backdropUp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/app_bar_height"
-                android:fitsSystemWindows="true"
                 android:layout_gravity="center_horizontal|bottom"
+                android:fitsSystemWindows="true"
                 app:layout_collapseMode="parallax"
                 fresco:actualImageScaleType="centerCrop" />
 
@@ -60,7 +60,11 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/full_movie_details" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
