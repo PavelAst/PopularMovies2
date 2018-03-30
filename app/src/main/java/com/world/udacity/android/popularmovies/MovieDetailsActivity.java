@@ -73,7 +73,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         // Add Fragments to adapter one by one
-        adapter.addFragment(new DetailsDescriptionFragment(), "DESCRIPTION");
+        adapter.addFragment(DetailsDescriptionFragment.newInstance(mMovie), "DESCRIPTION");
         adapter.addFragment(new DetailsTrailersFragment(), "TRAILERS");
         adapter.addFragment(new DetailsReviewsFragment(), "REVIEWS");
         viewPager.setAdapter(adapter);
