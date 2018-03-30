@@ -12,15 +12,26 @@ public class DetailsTrailersFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static DetailsTrailersFragment newInstance(int id) {
+        Bundle args = new Bundle();
+        args.putInt(MovieDetailsActivity.MOVIE_ID, id);
+        DetailsTrailersFragment fragment = new DetailsTrailersFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int movieId = getArguments().getInt(MovieDetailsActivity.MOVIE_ID);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_trailers, container, false);
+        View v = inflater.inflate(R.layout.fragment_trailers, container, false);
+
+        return v;
     }
 }

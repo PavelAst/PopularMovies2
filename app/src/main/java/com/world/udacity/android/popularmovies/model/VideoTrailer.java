@@ -4,16 +4,14 @@ public class VideoTrailer {
 
     private String mName;
     private String mKey;
-    private String mSite;
 
-    public VideoTrailer(String name, String key, String site) {
+    public VideoTrailer(String name, String key) {
         mName = name;
         mKey = key;
-        mSite = site;
     }
 
     @Override
     public String toString() {
-        return mName + " on " + mSite;
+        return mName + " on Youtube";
     }
 }

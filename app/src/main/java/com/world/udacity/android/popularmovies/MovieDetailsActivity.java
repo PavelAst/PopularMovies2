@@ -31,6 +31,7 @@ import java.util.List;
 public class MovieDetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
 
     public static final String MOVIE_ITEM = "movie_item_object";
+    public static final String MOVIE_ID = "movie_id";
 
     private TextView mMovieTitleTV;
     private SimpleDraweeView mPosterIV;
@@ -74,7 +75,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
 
         // Add Fragments to adapter one by one
         adapter.addFragment(DetailsDescriptionFragment.newInstance(mMovie), "DESCRIPTION");
-        adapter.addFragment(new DetailsTrailersFragment(), "TRAILERS");
+        adapter.addFragment(DetailsTrailersFragment.newInstance(mMovie.getId()), "TRAILERS");
         adapter.addFragment(new DetailsReviewsFragment(), "REVIEWS");
         viewPager.setAdapter(adapter);
 
