@@ -46,6 +46,23 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        SimpleDraweeView backDropIV = findViewById(R.id.iv_backdropUp);
+        CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.toolbar_layout);
+
+        Intent intentThatStartedThisActivity = getIntent();
+
+        if (intentThatStartedThisActivity != null) {
+            if (intentThatStartedThisActivity.hasExtra(MOVIE_ITEM)) {
+                mMovie = (MovieItem) intentThatStartedThisActivity.getParcelableExtra(MOVIE_ITEM);
+
+                //Set toolbar title
+                collapsingToolbar.setTitle(mMovie.getTitle());
+
+                String backdropUrl = TheMoviedbConstants.getPosterUrl("w780", mMovie.getBackdropPath());
+                backDropIV.setImageURI(backdropUrl);
+            }
+        }
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -73,7 +90,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             }
         });
 
-        SimpleDraweeView backDropIV = findViewById(R.id.iv_backdropUp);
+
 //        mMovieTitleTV = findViewById(R.id.tv_movie_title);
 //        mPosterIV = findViewById(R.id.iv_poster);
 //        mMovieReleleaseYearTV = findViewById(R.id.tv_movie_release_year);
