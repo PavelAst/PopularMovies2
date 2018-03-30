@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.world.udacity.android.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
+import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.Most;
 import com.world.udacity.android.popularmovies.utils.SortPreferences;
 

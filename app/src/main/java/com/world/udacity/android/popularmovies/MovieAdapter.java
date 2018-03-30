@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
 import java.util.List;

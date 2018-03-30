@@ -2,6 +2,7 @@ package com.world.udacity.android.popularmovies;
 
 import android.util.Log;
 
+import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.Most;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 

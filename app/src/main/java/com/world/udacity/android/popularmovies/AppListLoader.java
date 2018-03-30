@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
+import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.Most;
 
 import java.util.List;

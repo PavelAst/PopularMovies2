@@ -2,18 +2,25 @@ package com.world.udacity.android.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
 
     public static final String MOVIE_ITEM = "movie_item_object";
 
@@ -22,8 +29,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView mMovieReleleaseYearTV;
     private TextView mVoteAverageTV;
     private TextView mOverviewTV;
+    private RecyclerView mYoutubeTrailersRV;
 
     private MovieItem mMovie;
+    private VideoTrailerAdapter mVideoTrailerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +53,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
         });
 
+        SimpleDraweeView backDropIV = findViewById(R.id.iv_backdropUp);
         mMovieTitleTV = findViewById(R.id.tv_movie_title);
         mPosterIV = findViewById(R.id.iv_poster);
         mMovieReleleaseYearTV = findViewById(R.id.tv_movie_release_year);
         mVoteAverageTV = findViewById(R.id.tv_vote_average);
         mOverviewTV = findViewById(R.id.tv_overview);
-        SimpleDraweeView backDropIV = findViewById(R.id.iv_backdropUp);
+        mYoutubeTrailersRV = findViewById(R.id.youtube_trailers_recycler_view);
 
         Intent intentThatStartedThisActivity = getIntent();
 
@@ -75,8 +85,31 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 mVoteAverageTV.setText(rating);
 
                 mOverviewTV.setText(mMovie.getOverview());
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this,
+                        LinearLayoutManager.HORIZONTAL, false);
+                mYoutubeTrailersRV.setLayoutManager(layoutManager);
+                mYoutubeTrailersRV.setHasFixedSize(true);
+                mVideoTrailerAdapter = new VideoTrailerAdapter();
+                mYoutubeTrailersRV.setAdapter(mVideoTrailerAdapter);
             }
         }
+
+    }
+
+    @NonNull
+    @Override
+    public Loader onCreateLoader(int id, @Nullable Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader loader, Object data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader loader) {
 
     }
 }
