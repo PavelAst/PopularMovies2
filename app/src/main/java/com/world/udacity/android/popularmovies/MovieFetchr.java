@@ -52,7 +52,7 @@ class MovieFetchr {
     }
 
 
-    public List<MovieItem> fetchItems(Most mostFilm, int page) {
+    public List<MovieItem> fetchMovieItems(Most mostFilm, int page) {
 
         List<MovieItem> items = new ArrayList<>();
 
@@ -61,7 +61,7 @@ class MovieFetchr {
             String jsonString = getUrlString(url);
             if (L) Log.i(TAG, "Received JSON: " + jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);
-            parseItems(items, jsonBody);
+            parseMovieItems(items, jsonBody);
             return items;
         } catch (IOException ioe) {
             if (L) Log.e(TAG, "Failed to fetch items", ioe);
@@ -72,7 +72,7 @@ class MovieFetchr {
         }
     }
 
-    private void parseItems(List<MovieItem> items, JSONObject jsonBody)
+    private void parseMovieItems(List<MovieItem> items, JSONObject jsonBody)
             throws IOException, JSONException {
         JSONArray resultsJsonArray = jsonBody.getJSONArray("results");
 

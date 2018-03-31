@@ -56,7 +56,7 @@ public class AppListLoader extends AsyncTaskLoader<List<MovieItem>> {
         int searchQueryPage = mArgs.getInt(MainActivity.SEARCH_QUERY_PAGE);
         Most searchQuerySort = (Most) mArgs.getSerializable(MainActivity.SEARCH_QUERY_SORT);
 
-        return new MovieFetchr().fetchItems(searchQuerySort, searchQueryPage);
+        return new MovieFetchr().fetchMovieItems(searchQuerySort, searchQueryPage);
     }
 
     /**

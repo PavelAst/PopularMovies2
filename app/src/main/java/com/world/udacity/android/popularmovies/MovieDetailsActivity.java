@@ -33,15 +33,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     public static final String MOVIE_ITEM = "movie_item_object";
     public static final String MOVIE_ID = "movie_id";
 
-    private TextView mMovieTitleTV;
-    private SimpleDraweeView mPosterIV;
-    private TextView mMovieReleleaseYearTV;
-    private TextView mVoteAverageTV;
-    private TextView mOverviewTV;
-    private RecyclerView mYoutubeTrailersRV;
-
     private MovieItem mMovie;
-    private VideoTrailerAdapter mVideoTrailerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,48 +83,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             }
         });
 
-
-//        mMovieTitleTV = findViewById(R.id.tv_movie_title);
-//        mPosterIV = findViewById(R.id.iv_poster);
-//        mMovieReleleaseYearTV = findViewById(R.id.tv_movie_release_year);
-//        mVoteAverageTV = findViewById(R.id.tv_vote_average);
-//        mOverviewTV = findViewById(R.id.tv_overview);
-//        mYoutubeTrailersRV = findViewById(R.id.youtube_trailers_recycler_view);
-//
-//        Intent intentThatStartedThisActivity = getIntent();
-//
-//        if (intentThatStartedThisActivity != null) {
-//            if (intentThatStartedThisActivity.hasExtra(MOVIE_ITEM)) {
-//                mMovie = (MovieItem) intentThatStartedThisActivity.getParcelableExtra(MOVIE_ITEM);
-//
-//                //Set toolbar title
-//                CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.toolbar_layout);
-//                collapsingToolbar.setTitle(mMovie.getTitle());
-//
-//                mMovieTitleTV.setText(mMovie.getTitle());
-//
-//                String backdropUrl = TheMoviedbConstants.getPosterUrl("w780", mMovie.getBackdropPath());
-//                backDropIV.setImageURI(backdropUrl);
-//
-//                String posterUrl = TheMoviedbConstants.getPosterUrl("w342", mMovie.getPosterPath());
-//                mPosterIV.setImageURI(posterUrl);
-//
-//                mMovieReleleaseYearTV.setText(mMovie.getReleaseYear());
-//
-//                String rating = getString(R.string.rating_string, mMovie.getVoteAverage());
-//                mVoteAverageTV.setText(rating);
-//
-//                mOverviewTV.setText(mMovie.getOverview());
-//
-//                LinearLayoutManager layoutManager = new LinearLayoutManager(this,
-//                        LinearLayoutManager.HORIZONTAL, false);
-//                mYoutubeTrailersRV.setLayoutManager(layoutManager);
-//                mYoutubeTrailersRV.setHasFixedSize(true);
-//                mVideoTrailerAdapter = new VideoTrailerAdapter();
-//                mYoutubeTrailersRV.setAdapter(mVideoTrailerAdapter);
-//            }
-//        }
-
     }
 
     @NonNull
@@ -180,6 +130,5 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
             return mFragmentTitleList.get(position);
         }
     }
-
 
 }
