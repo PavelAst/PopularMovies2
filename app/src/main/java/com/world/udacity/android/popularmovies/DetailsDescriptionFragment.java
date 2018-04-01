@@ -12,8 +12,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
-import org.w3c.dom.Text;
-
 public class DetailsDescriptionFragment extends Fragment {
 
     String mTitle;
@@ -39,7 +37,7 @@ public class DetailsDescriptionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MovieItem movie = getArguments().getParcelable(MovieDetailsActivity.MOVIE_ITEM);
-        mPosterUrl = TheMoviedbConstants.getPosterUrl("w342", movie.getPosterPath());
+        mPosterUrl = TheMoviedbConstants.getMoviePosterUrl("w185", movie.getPosterPath());
         mTitle = movie.getTitle();
         mReleaseYear = movie.getReleaseYear();
         mVoteAverage = getString(R.string.rating_string, movie.getVoteAverage());

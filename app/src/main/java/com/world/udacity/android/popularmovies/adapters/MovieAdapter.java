@@ -1,4 +1,4 @@
-package com.world.udacity.android.popularmovies;
+package com.world.udacity.android.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.world.udacity.android.popularmovies.R;
 import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
@@ -39,7 +40,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
 
         public void bindTo(MovieItem item) {
-            String posterUrl = TheMoviedbConstants.getPosterUrl("w185", item.getPosterPath());
+            String posterUrl = TheMoviedbConstants.getMoviePosterUrl("w185", item.getPosterPath());
             mPosterImageView.setImageURI(posterUrl);
         }
 

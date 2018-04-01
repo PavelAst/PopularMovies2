@@ -15,11 +15,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.world.udacity.android.popularmovies.model.MovieItem;
@@ -51,7 +48,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                 //Set toolbar title
                 collapsingToolbar.setTitle(mMovie.getTitle());
 
-                String backdropUrl = TheMoviedbConstants.getPosterUrl("w780", mMovie.getBackdropPath());
+                String backdropUrl = TheMoviedbConstants.getMoviePosterUrl("w780", mMovie.getBackdropPath());
                 backDropIV.setImageURI(backdropUrl);
             }
         }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
@@ -22,7 +23,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.world.udacity.android.popularmovies.MovieAdapter.MovieAdapterOnClickHandler;
+import com.world.udacity.android.popularmovies.adapters.MovieAdapter;
+import com.world.udacity.android.popularmovies.adapters.MovieAdapter.MovieAdapterOnClickHandler;
 import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.Most;
 import com.world.udacity.android.popularmovies.utils.SortPreferences;
@@ -184,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public Loader<List<MovieItem>> onCreateLoader(int id, final Bundle loaderArgs) {
         if (L) Log.i(TAG, "<> In onCreateLoader");
-        return new AppListLoader(this, loaderArgs, new AppListLoader.LoaderOnStartHandler() {
+        return new AppMovieLoader(this, loaderArgs, new AppMovieLoader.LoaderOnStartHandler() {
             @Override
             public void onLoad(boolean start) {
                 mLoadingIndicator.setVisibility(View.VISIBLE);
@@ -193,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoadFinished(Loader<List<MovieItem>> loader, List<MovieItem> data) {
+    public void onLoadFinished(@NonNull Loader<List<MovieItem>> loader, List<MovieItem> data) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
 
         if (null == data) {

@@ -3,6 +3,7 @@ package com.world.udacity.android.popularmovies;
 import android.util.Log;
 
 import com.world.udacity.android.popularmovies.model.MovieItem;
+import com.world.udacity.android.popularmovies.model.VideoTrailer;
 import com.world.udacity.android.popularmovies.utils.Most;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
@@ -89,6 +90,43 @@ class MovieFetchr {
             item.setBackdropPath(movieJsonObject.getString("backdrop_path"));
 
             items.add(item);
+        }
+    }
+
+    public List<VideoTrailer> fetchMovieTrailers(int movieId) {
+
+        List<VideoTrailer> trailers = new ArrayList<>();
+
+        try {
+            String url = TheMoviedbConstants.getTrailersUrl(movieId, "en");
+            String jsonString = getUrlString(url);
+            if (L) Log.i(TAG, "Received JSON: " + jsonString);
+            JSONObject jsonBody = new JSONObject(jsonString);
+            parseMovieTrailers(trailers, jsonBody);
+            return trailers;
+        } catch (IOException ioe) {
+            if (L) Log.e(TAG, "Failed to fetch trailers data", ioe);
+            return null;
+        } catch (JSONException je) {
+            if (L) Log.e(TAG, "Failed to parse JSON", je);
+            return null;
+        }
+    }
+
+    private void parseMovieTrailers(List<VideoTrailer> trailers, JSONObject jsonBody)
+            throws IOException, JSONException {
+        JSONArray resultsJsonArray = jsonBody.getJSONArray("results");
+
+        for (int i = 0; i < resultsJsonArray.length(); i++) {
+            JSONObject trailerJsonObject = resultsJsonArray.getJSONObject(i);
+            String trailerName = trailerJsonObject.getString("name");
+            String trailerKey = trailerJsonObject.getString("key");
+            String trailerSite = trailerJsonObject.getString("site");
+
+            if (trailerSite.toLowerCase().equals("youtube")) {
+                VideoTrailer videoTrailer = new VideoTrailer(trailerName, trailerKey);
+                trailers.add(videoTrailer);
+            }
         }
     }
 
