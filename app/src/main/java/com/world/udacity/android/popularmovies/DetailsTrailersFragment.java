@@ -1,36 +1,35 @@
 package com.world.udacity.android.popularmovies;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.world.udacity.android.popularmovies.adapters.VideoTrailerAdapter;
+import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.model.VideoTrailer;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class DetailsTrailersFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<List<VideoTrailer>> {
+
+public class DetailsTrailersFragment extends Fragment {
 
     // Turn logging on or off
     private static final boolean L = true;
     public static final String TAG = "MovieMethod";
 
-    private static final int YOUTUBE_LOADER_ID = 25;
-    public static final String MOVIE_ID = "movie_id";
+    private ArrayList<VideoTrailer> mTrailers;
 
     private RecyclerView mYoutubeTrailersRV;
     private VideoTrailerAdapter mVideoTrailerAdapter;
@@ -39,21 +38,37 @@ public class DetailsTrailersFragment extends Fragment implements
         // Required empty public constructor
     }
 
-    public static DetailsTrailersFragment newInstance(int id) {
+    public static DetailsTrailersFragment newInstance(MovieItem movieItem) {
         Bundle args = new Bundle();
-        args.putInt(DetailsTrailersFragment.MOVIE_ID, id);
+        args.putParcelable(MovieDetailsActivity.MOVIE_ITEM, movieItem);
         DetailsTrailersFragment fragment = new DetailsTrailersFragment();
         fragment.setArguments(args);
 
         return fragment;
     }
 
+    private BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "Get intent message - trailers ************");
+            if (intent.getAction().equalsIgnoreCase(MovieDetailsActivity.GET_TRAILERS_LIST_EVENT)) {
+                mTrailers = intent.getParcelableArrayListExtra(MovieDetailsActivity.TRAILERS);
+                mVideoTrailerAdapter.setTrailers(mTrailers);
+            }
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (L) Log.i(TAG, " <> DetailsTrailersFragment - onCreate");
-        int movieId = getArguments().getInt(DetailsTrailersFragment.MOVIE_ID);
-        loadYoutubeTrailersData(movieId);
+        MovieItem movie = getArguments().getParcelable(MovieDetailsActivity.MOVIE_ITEM);
+        mTrailers = movie.getTrailers();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MovieDetailsActivity.GET_TRAILERS_LIST_EVENT);
+        LocalBroadcastManager.getInstance(getActivity())
+                .registerReceiver(mUpdateUIReceiver, intentFilter);
     }
 
     @Override
@@ -79,43 +94,19 @@ public class DetailsTrailersFragment extends Fragment implements
             }
         });
         mYoutubeTrailersRV.setAdapter(mVideoTrailerAdapter);
+        if (mTrailers != null) {
+            mVideoTrailerAdapter.setTrailers(mTrailers);
+        }
 
         return v;
-    }
-
-    private void loadYoutubeTrailersData(int id) {
-        Bundle queryBundle = new Bundle();
-        queryBundle.putInt(MOVIE_ID, id);
-        LoaderManager loaderManager = getActivity().getSupportLoaderManager();
-        loaderManager.initLoader(YOUTUBE_LOADER_ID, queryBundle, this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         if (L) Log.i(TAG, " <> DetailsTrailersFragment - onPause");
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mUpdateUIReceiver);
     }
 
-    @NonNull
-    @Override
-    public Loader<List<VideoTrailer>> onCreateLoader(int id, @Nullable Bundle loaderArgs) {
-        return new AppTrailersLoader(getActivity(), loaderArgs);
-    }
 
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<VideoTrailer>> loader, List<VideoTrailer> data) {
-        if (null == data) {
-            Toast.makeText(getActivity(),
-                    R.string.error_message_all,
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            mVideoTrailerAdapter.setTrailers(data);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<List<VideoTrailer>> loader) {
-
-    }
-    
 }

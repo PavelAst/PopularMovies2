@@ -11,12 +11,13 @@ import android.widget.TextView;
 import com.world.udacity.android.popularmovies.R;
 import com.world.udacity.android.popularmovies.model.Review;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
     private final Context mContext;
-    private List<Review> mReviews;
+    private ArrayList<Review> mReviews;
 
     public ReviewAdapter(Context context) {
         mContext = context;
@@ -60,7 +61,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         return (mReviews == null) ? 0 : mReviews.size();
     }
 
-    public void setReviews(List<Review> reviews) {
+    public void setReviews(ArrayList<Review> reviews) {
         mReviews = reviews;
         notifyDataSetChanged();
     }

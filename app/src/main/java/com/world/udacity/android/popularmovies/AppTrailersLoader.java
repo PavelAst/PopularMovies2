@@ -35,11 +35,11 @@ class AppTrailersLoader extends AsyncTaskLoader<List<VideoTrailer>> {
     @Nullable
     @Override
     public List<VideoTrailer> loadInBackground() {
-        if (!mArgs.containsKey(DetailsTrailersFragment.MOVIE_ID)) {
+        if (!mArgs.containsKey(MovieDetailsActivity.MOVIE_ID)) {
             return null;
         }
 
-        int movieId = mArgs.getInt(DetailsTrailersFragment.MOVIE_ID);
+        int movieId = mArgs.getInt(MovieDetailsActivity.MOVIE_ID);
 
         return new MovieFetchr().fetchMovieTrailers(movieId);
     }

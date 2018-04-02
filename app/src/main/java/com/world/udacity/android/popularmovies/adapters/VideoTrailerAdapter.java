@@ -13,13 +13,14 @@ import com.world.udacity.android.popularmovies.R;
 import com.world.udacity.android.popularmovies.model.VideoTrailer;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VideoTrailerAdapter extends
         RecyclerView.Adapter<VideoTrailerAdapter.VideoTrailerViewHolder> {
 
     private final Context mContext;
-    private List<VideoTrailer> mTrailers;
+    private ArrayList<VideoTrailer> mTrailers;
 
     private final VideoTrailerAdapterOnClickHandler mClickHandler;
 
@@ -83,7 +84,7 @@ public class VideoTrailerAdapter extends
         return (mTrailers == null) ? 0 : mTrailers.size();
     }
 
-    public void setTrailers(List<VideoTrailer> trailers) {
+    public void setTrailers(ArrayList<VideoTrailer> trailers) {
         mTrailers = trailers;
         notifyDataSetChanged();
     }

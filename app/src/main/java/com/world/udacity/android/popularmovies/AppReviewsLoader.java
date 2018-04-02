@@ -36,11 +36,11 @@ public class AppReviewsLoader extends AsyncTaskLoader<List<Review>> {
     @Nullable
     @Override
     public List<Review> loadInBackground() {
-        if (!mArgs.containsKey(DetailsReviewsFragment.MOVIE_ID)) {
+        if (!mArgs.containsKey(MovieDetailsActivity.MOVIE_ID)) {
             return null;
         }
 
-        int movieId = mArgs.getInt(DetailsReviewsFragment.MOVIE_ID);
+        int movieId = mArgs.getInt(MovieDetailsActivity.MOVIE_ID);
 
         return new MovieFetchr().fetchMovieReviews(movieId);
     }

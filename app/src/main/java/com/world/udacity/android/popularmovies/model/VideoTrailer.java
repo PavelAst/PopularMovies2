@@ -1,6 +1,9 @@
 package com.world.udacity.android.popularmovies.model;
 
-public class VideoTrailer {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class VideoTrailer implements Parcelable {
 
     private String mName;
     private String mKey;
@@ -9,6 +12,23 @@ public class VideoTrailer {
         mName = name;
         mKey = key;
     }
+
+    protected VideoTrailer(Parcel in) {
+        mName = in.readString();
+        mKey = in.readString();
+    }
+
+    public static final Creator<VideoTrailer> CREATOR = new Creator<VideoTrailer>() {
+        @Override
+        public VideoTrailer createFromParcel(Parcel in) {
+            return new VideoTrailer(in);
+        }
+
+        @Override
+        public VideoTrailer[] newArray(int size) {
+            return new VideoTrailer[size];
+        }
+    };
 
     public String getName() {
         return mName;
@@ -29,5 +49,16 @@ public class VideoTrailer {
     @Override
     public String toString() {
         return mName + " on Youtube";
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(mName);
+        parcel.writeString(mKey);
     }
 }

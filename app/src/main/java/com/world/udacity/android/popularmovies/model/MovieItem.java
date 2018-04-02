@@ -3,6 +3,9 @@ package com.world.udacity.android.popularmovies.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MovieItem implements Parcelable {
 
     private int mId;
@@ -13,6 +16,9 @@ public class MovieItem implements Parcelable {
     private String mOverview;
     private String mReleaseDate;
     private int mRuntime;
+
+    private ArrayList<VideoTrailer> mTrailers;
+    private ArrayList<Review> mReviews;
 
     public MovieItem() {
         mId = 0;
@@ -26,7 +32,8 @@ public class MovieItem implements Parcelable {
     }
 
     public MovieItem(int id, String title, String posterPath, double voteAverage,
-                     String backdropPath, int runtime, String overview, String releaseDate) {
+                     String backdropPath, int runtime, String overview, String releaseDate,
+                     ArrayList<VideoTrailer> trailers, ArrayList<Review> reviews) {
         mId = id;
         mTitle = title;
         mVoteAverage = voteAverage;
@@ -35,6 +42,8 @@ public class MovieItem implements Parcelable {
         mOverview = overview;
         mReleaseDate = releaseDate;
         mRuntime = runtime;
+        mTrailers = trailers;
+        mReviews = reviews;
     }
 
     protected MovieItem(Parcel in) {
@@ -46,6 +55,8 @@ public class MovieItem implements Parcelable {
         mOverview = in.readString();
         mReleaseDate = in.readString();
         mRuntime = in.readInt();
+        in.readList(new ArrayList<VideoTrailer>(), null);
+        in.readList(new ArrayList<Review>(), null);
     }
 
     public static final Creator<MovieItem> CREATOR = new Creator<MovieItem>() {
@@ -75,6 +86,8 @@ public class MovieItem implements Parcelable {
         out.writeString(mOverview);
         out.writeString(mReleaseDate);
         out.writeInt(mRuntime);
+        out.writeList(mTrailers);
+        out.writeList(mReviews);
     }
 
     public int getId() {
@@ -139,6 +152,22 @@ public class MovieItem implements Parcelable {
 
     public void setRuntime(int runtime) {
         mRuntime = runtime;
+    }
+
+    public ArrayList<VideoTrailer> getTrailers() {
+        return mTrailers;
+    }
+
+    public void setTrailers(ArrayList<VideoTrailer> trailers) {
+        mTrailers = trailers;
+    }
+
+    public ArrayList<Review> getReviews() {
+        return mReviews;
+    }
+
+    public void setReviews(ArrayList<Review> reviews) {
+        mReviews = reviews;
     }
 
     public String getReleaseYear() {
