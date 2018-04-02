@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.world.udacity.android.popularmovies.adapters.VideoTrailerAdapter;
 import com.world.udacity.android.popularmovies.model.MovieItem;
@@ -26,12 +27,14 @@ import java.util.ArrayList;
 public class DetailsTrailersFragment extends Fragment {
 
     // Turn logging on or off
-    private static final boolean L = true;
+    private static final boolean L = false;
     public static final String TAG = "MovieMethod";
 
     private ArrayList<VideoTrailer> mTrailers;
 
     private RecyclerView mYoutubeTrailersRV;
+    private TextView mErrorMessageTV;
+
     private VideoTrailerAdapter mVideoTrailerAdapter;
 
     public DetailsTrailersFragment() {
@@ -50,9 +53,10 @@ public class DetailsTrailersFragment extends Fragment {
     private BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "Get intent message - trailers ************");
+            Log.d(TAG, "Get intent message - trailers ************");
             if (intent.getAction().equalsIgnoreCase(MovieDetailsActivity.GET_TRAILERS_LIST_EVENT)) {
                 mTrailers = intent.getParcelableArrayListExtra(MovieDetailsActivity.TRAILERS);
+                showYoutubeTrailersView();
                 mVideoTrailerAdapter.setTrailers(mTrailers);
             }
         }
@@ -77,6 +81,7 @@ public class DetailsTrailersFragment extends Fragment {
         if (L) Log.i(TAG, " <> DetailsTrailersFragment - onCreateView");
         View v = inflater.inflate(R.layout.fragment_trailers, container, false);
         mYoutubeTrailersRV = v.findViewById(R.id.youtube_trailers_recycler_view);
+        mErrorMessageTV = v.findViewById(R.id.tv_error_tr_message_display);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
@@ -94,7 +99,8 @@ public class DetailsTrailersFragment extends Fragment {
             }
         });
         mYoutubeTrailersRV.setAdapter(mVideoTrailerAdapter);
-        if (mTrailers != null) {
+        if (mTrailers != null && !mTrailers.isEmpty()) {
+            showYoutubeTrailersView();
             mVideoTrailerAdapter.setTrailers(mTrailers);
         }
 
@@ -108,5 +114,9 @@ public class DetailsTrailersFragment extends Fragment {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mUpdateUIReceiver);
     }
 
+    private void showYoutubeTrailersView() {
+        mYoutubeTrailersRV.setVisibility(View.VISIBLE);
+        mErrorMessageTV.setVisibility(View.INVISIBLE);
+    }
 
 }

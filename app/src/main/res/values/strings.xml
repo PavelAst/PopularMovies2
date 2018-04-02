@@ -12,6 +12,8 @@
     <string name="error_message_network">
         Network isn\'t available. Please try later.
     </string>
+    <string name="error_message_trailers">There are no trailers to show</string>
+    <string name="error_message_reviews">There are no reviews to show</string>
 
     <string name="rating_string">Rating - %.1f/10</string>
     <string name="title_activity_movie_detail">MovieDetailsActivity</string>

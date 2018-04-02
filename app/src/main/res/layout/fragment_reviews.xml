@@ -13,22 +13,17 @@
         android:layout_height="match_parent"
         android:layout_margin="4dp"
         android:background="@color/colorPrimaryLight"
+        android:visibility="invisible"
         tools:context=".MovieDetailsActivity" />
 
     <TextView
         android:id="@+id/tv_error_rev_message_display"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:textSize="20sp"
-        android:visibility="invisible"
-        tools:text="@string/error_message_all" />
-
-    <ProgressBar
-        android:id="@+id/pb_reviews_loading_indicator"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_gravity="center"
-        android:visibility="invisible" />
+        android:text="@string/error_message_reviews"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
 </FrameLayout>

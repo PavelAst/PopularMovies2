@@ -12,7 +12,6 @@ import com.world.udacity.android.popularmovies.R;
 import com.world.udacity.android.popularmovies.model.Review;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 

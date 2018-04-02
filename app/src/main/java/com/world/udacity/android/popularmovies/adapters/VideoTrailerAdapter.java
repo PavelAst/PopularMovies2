@@ -14,7 +14,6 @@ import com.world.udacity.android.popularmovies.model.VideoTrailer;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class VideoTrailerAdapter extends
         RecyclerView.Adapter<VideoTrailerAdapter.VideoTrailerViewHolder> {

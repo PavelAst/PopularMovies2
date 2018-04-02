@@ -5,11 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,24 +13,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.world.udacity.android.popularmovies.adapters.ReviewAdapter;
 import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.model.Review;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DetailsReviewsFragment extends Fragment {
 
     // Turn logging on or off
-    private static final boolean L = true;
+    private static final boolean L = false;
     public static final String TAG = "MovieMethod";
 
     private ArrayList<Review> mReviews;
 
     private RecyclerView mReviesRV;
+    private TextView mErrorMessageTV;
+
     private ReviewAdapter mReviewAdapter;
 
     public DetailsReviewsFragment() {
@@ -54,8 +51,10 @@ public class DetailsReviewsFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equalsIgnoreCase(MovieDetailsActivity.GET_REVIEWS_LIST_EVENT)) {
-                Log.d(TAG, "Get intent message - reviews ************");
                 mReviews = intent.getParcelableArrayListExtra(MovieDetailsActivity.REVIEWS);
+
+                showMovieReviewsView();
+                Log.d(TAG, "Get intent message - reviews ************" + mReviews);
                 mReviewAdapter.setReviews(mReviews);
             }
         }
@@ -80,6 +79,7 @@ public class DetailsReviewsFragment extends Fragment {
         if (L) Log.i(TAG, " <> DetailsReviewsFragment - onCreateView");
         View v = inflater.inflate(R.layout.fragment_reviews, container, false);
         mReviesRV = v.findViewById(R.id.reviews_recycler_view);
+        mErrorMessageTV = v.findViewById(R.id.tv_error_rev_message_display);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
@@ -88,11 +88,17 @@ public class DetailsReviewsFragment extends Fragment {
 
         mReviewAdapter = new ReviewAdapter(getActivity());
         mReviesRV.setAdapter(mReviewAdapter);
-        if (mReviews != null) {
+        if (mReviews != null && !mReviews.isEmpty()) {
+            showMovieReviewsView();
             mReviewAdapter.setReviews(mReviews);
         }
 
         return v;
+    }
+
+    private void showMovieReviewsView() {
+        mReviesRV.setVisibility(View.VISIBLE);
+        mErrorMessageTV.setVisibility(View.INVISIBLE);
     }
 
     @Override
