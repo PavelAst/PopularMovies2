@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/description_sv"
+    android:id="@+id/reviews_fl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryLight"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MovieDetailsActivity"
-    tools:showIn="@layout/activity_movie_details">
+    android:background="@color/colorPrimaryLight">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/reviews_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#4f548b">
+        android:layout_margin="4dp"
+        android:background="@color/colorPrimaryLight"
+        tools:context=".MovieDetailsActivity" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ut lectus eget purus pretium dignissim suscipit eu leo. In posuere, erat ac iaculis eleifend, felis est varius tortor, id pulvinar lacus augue a magna. Phasellus consequat pulvinar porta. Integer auctor risus nec posuere posuere. Curabitur diam tellus, tincidunt eu nunc ac, tempor euismod nulla. Donec fringilla ex ornare, dignissim lectus in, mattis mi. Vivamus rutrum massa ex, a tristique elit cursus ut. In mollis purus ut dapibus tempor. Nullam tempor at justo tempor condimentum. Cras egestas mi nec ultricies blandit. Curabitur odio diam, ultrices ac ultricies aliquam, efficitur maximus ante. Nulla ultricies et metus sed cursus. Phasellus ut arcu ipsum. Nunc consequat porta enim id rhoncus. Morbi sed justo nec nulla congue laoreet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ut lectus eget purus pretium dignissim suscipit eu leo. In posuere, erat ac iaculis eleifend, felis est varius tortor, id pulvinar lacus augue a magna. Phasellus consequat pulvinar porta. Integer auctor risus nec posuere posuere. Curabitur diam tellus, tincidunt eu nunc ac, tempor euismod nulla. Donec fringilla ex ornare, dignissim lectus in, mattis mi. Vivamus rutrum massa ex, a tristique elit cursus ut. In mollis purus ut dapibus tempor. Nullam tempor at justo tempor condimentum. Cras egestas mi nec ultricies blandit. Curabitur odio diam, ultrices ac ultricies aliquam, efficitur maximus ante. Nulla ultricies et metus sed cursus. Phasellus ut arcu ipsum. Nunc consequat porta enim id rhoncus. Morbi sed justo nec nulla congue laoreet."
-            android:textColor="#fff"
-            android:textSize="20sp" />
+    <TextView
+        android:id="@+id/tv_error_rev_message_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        tools:text="@string/error_message_all" />
 
-    </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/pb_reviews_loading_indicator"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
 
-</android.support.v4.widget.NestedScrollView>
+</FrameLayout>

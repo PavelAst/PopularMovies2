@@ -3,6 +3,7 @@ package com.world.udacity.android.popularmovies;
 import android.util.Log;
 
 import com.world.udacity.android.popularmovies.model.MovieItem;
+import com.world.udacity.android.popularmovies.model.Review;
 import com.world.udacity.android.popularmovies.model.VideoTrailer;
 import com.world.udacity.android.popularmovies.utils.Most;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
@@ -58,7 +59,7 @@ class MovieFetchr {
         List<MovieItem> items = new ArrayList<>();
 
         try {
-            String url = TheMoviedbConstants.getMoviesUrl(mostFilm, "en", page);
+            String url = TheMoviedbConstants.getMoviesUrl(mostFilm, "en-US", page);
             String jsonString = getUrlString(url);
             if (L) Log.i(TAG, "Received JSON: " + jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);
@@ -98,7 +99,7 @@ class MovieFetchr {
         List<VideoTrailer> trailers = new ArrayList<>();
 
         try {
-            String url = TheMoviedbConstants.getTrailersUrl(movieId, "en");
+            String url = TheMoviedbConstants.getTrailersUrl(movieId, "en-US");
             String jsonString = getUrlString(url);
             if (L) Log.i(TAG, "Received JSON: " + jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);
@@ -127,6 +128,40 @@ class MovieFetchr {
                 VideoTrailer videoTrailer = new VideoTrailer(trailerName, trailerKey);
                 trailers.add(videoTrailer);
             }
+        }
+    }
+
+    public List<Review> fetchMovieReviews(int movieId) {
+
+        List<Review> reviews = new ArrayList<>();
+
+        try {
+            String url = TheMoviedbConstants.getReviewsUrl(movieId, "en-US", 1);
+            String jsonString = getUrlString(url);
+            if (L) Log.i(TAG, "Received JSON: " + jsonString);
+            JSONObject jsonBody = new JSONObject(jsonString);
+            parseMovieReviews(reviews, jsonBody);
+            return reviews;
+        } catch (IOException ioe) {
+            if (L) Log.e(TAG, "Failed to fetch reviews data", ioe);
+            return null;
+        } catch (JSONException je) {
+            if (L) Log.e(TAG, "Failed to parse JSON", je);
+            return null;
+        }
+    }
+
+    private void parseMovieReviews(List<Review> reviews, JSONObject jsonBody)
+            throws IOException, JSONException {
+        JSONArray resultsJsonArray = jsonBody.getJSONArray("results");
+
+        for (int i = 0; i < resultsJsonArray.length(); i++) {
+            JSONObject reviewJsonObject = resultsJsonArray.getJSONObject(i);
+            String reviewAuthor = reviewJsonObject.getString("author");
+            String reviewContent = reviewJsonObject.getString("content");
+
+            Review review = new Review(reviewAuthor, reviewContent);
+            reviews.add(review);
         }
     }
 

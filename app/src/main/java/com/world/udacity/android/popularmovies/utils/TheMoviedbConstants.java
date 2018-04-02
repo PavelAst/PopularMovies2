@@ -8,7 +8,7 @@ import com.world.udacity.android.popularmovies.BuildConfig;
 public class TheMoviedbConstants {
 
     // Turn logging on or off
-    private static final boolean L = false;
+    private static final boolean L = true;
 
     private static final String TAG = "MovieConstants";
 
@@ -30,7 +30,7 @@ public class TheMoviedbConstants {
     private static final String YOUTUBE_WATCH_SEGMENT = "watch";
     private static final String YOUTUBE_V_PARAM = "v";
 
-    // https://api.themoviedb.org/3/movie/popular?api_key=API_KEY&page=1&language=en
+    //  https://api.themoviedb.org/3/movie/popular?api_key=API_KEY&page=1&language=en
     public static String getMoviesUrl(Most mostFilm, String lang, int page) {
         String mostSegment = (mostFilm == Most.POPULAR) ? POPULAR_SEGMENT : TOP_RATED_SEGMENT;
         Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
@@ -44,13 +44,13 @@ public class TheMoviedbConstants {
         return builtUri.toString();
     }
 
-    //    https://image.tmdb.org/t/p/w185//qpdF5bhIYFguucIcCKaXXo202ny.jpg
+    //  https://image.tmdb.org/t/p/w185//qpdF5bhIYFguucIcCKaXXo202ny.jpg
     public static String getMoviePosterUrl(String size, String path) {
         Uri builtUri = Uri.parse(MOVIE_POSTER_BASE_URL).buildUpon()
                 .appendEncodedPath(size)
                 .appendEncodedPath(path)
                 .build();
-        if (L) Log.i(TAG, "getMoviePosterUrl - " + builtUri.toString());
+//        if (L) Log.i(TAG, "getMoviePosterUrl - " + builtUri.toString());
         return builtUri.toString();
     }
 
@@ -64,7 +64,7 @@ public class TheMoviedbConstants {
         return builtUri.toString();
     }
 
-    //    https://api.themoviedb.org/3/movie/181808?api_key=API_KEY
+    //  https://api.themoviedb.org/3/movie/181808?api_key=API_KEY
     public static String getMovieInfoUrl(int id) {
         Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
                 .appendEncodedPath(MOVIE_SEGMENT)
@@ -75,7 +75,7 @@ public class TheMoviedbConstants {
         return builtUri.toString();
     }
 
-    //    https://api.themoviedb.org/3/movie/181808/videos?api_key=API_KEY&language=en
+    //  https://api.themoviedb.org/3/movie/181808/videos?api_key=API_KEY&language=en-US
     public static String getTrailersUrl(int id, String lang) {
         Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
                 .appendEncodedPath(MOVIE_SEGMENT)
@@ -98,13 +98,15 @@ public class TheMoviedbConstants {
         return builtUri.toString();
     }
 
-    //    https://api.themoviedb.org/3/movie/181808/reviews?api_key=API_KEY
-    public static String getReviewsUrl(int id) {
+    //  https://api.themoviedb.org/3/movie/181808/reviews?api_key=API_KEY&page=1&language=en-US
+    public static String getReviewsUrl(int id, String lang, int page) {
         Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
                 .appendEncodedPath(MOVIE_SEGMENT)
                 .appendEncodedPath(Integer.toString(id))
                 .appendEncodedPath(REVIEWS_SEGMENT)
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .appendQueryParameter(PAGE_PARAM, Integer.toString(page))
+                .appendQueryParameter(LANGUAGE_PARAM, lang)
                 .build();
         if (L) Log.i(TAG, "getReviewsUrl - " + builtUri.toString());
         return builtUri.toString();

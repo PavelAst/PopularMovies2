@@ -3,6 +3,7 @@ package com.world.udacity.android.popularmovies;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,10 @@ import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
 public class DetailsDescriptionFragment extends Fragment {
+
+    // Turn logging on or off
+    private static final boolean L = true;
+    public static final String TAG = "MovieMethod";
 
     String mTitle;
     String mPosterUrl;
@@ -36,6 +41,7 @@ public class DetailsDescriptionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (L) Log.i(TAG, " <> DetailsDescriptionFragment - onCreate");
         MovieItem movie = getArguments().getParcelable(MovieDetailsActivity.MOVIE_ITEM);
         mPosterUrl = TheMoviedbConstants.getMoviePosterUrl("w185", movie.getPosterPath());
         mTitle = movie.getTitle();
@@ -47,6 +53,7 @@ public class DetailsDescriptionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (L) Log.i(TAG, " <> DetailsDescriptionFragment - onCreateView");
         View v = inflater.inflate(R.layout.fragment_description, container, false);
         SimpleDraweeView posterIV = v.findViewById(R.id.iv_poster);
         TextView movieTitleTV = v.findViewById(R.id.tv_movie_title);
@@ -63,4 +70,9 @@ public class DetailsDescriptionFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (L) Log.i(TAG, " <> DetailsDescriptionFragment - onPause");
+    }
 }

@@ -32,7 +32,8 @@ public class VideoTrailerAdapter extends
         mClickHandler = clickHandler;
     }
 
-    public class VideoTrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class VideoTrailerViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
         public final SimpleDraweeView mThumbnailYoutubeIV;
         public final TextView mTrailerNameTV;
@@ -82,7 +83,7 @@ public class VideoTrailerAdapter extends
         return (mTrailers == null) ? 0 : mTrailers.size();
     }
 
-    public void setTrailersKeys(List<VideoTrailer> trailers) {
+    public void setTrailers(List<VideoTrailer> trailers) {
         mTrailers = trailers;
         notifyDataSetChanged();
     }

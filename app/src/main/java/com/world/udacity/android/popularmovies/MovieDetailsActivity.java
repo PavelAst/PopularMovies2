@@ -25,7 +25,7 @@ import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieDetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
+public class MovieDetailsActivity extends AppCompatActivity {
 
     public static final String MOVIE_ITEM = "movie_item_object";
     public static final String MOVIE_ID = "movie_id";
@@ -65,7 +65,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         // Add Fragments to adapter one by one
         adapter.addFragment(DetailsDescriptionFragment.newInstance(mMovie), "DESCRIPTION");
         adapter.addFragment(DetailsTrailersFragment.newInstance(mMovie.getId()), "TRAILERS");
-        adapter.addFragment(new DetailsReviewsFragment(), "REVIEWS");
+        adapter.addFragment(DetailsReviewsFragment.newInstance(mMovie.getId()), "REVIEWS");
         viewPager.setAdapter(adapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -79,22 +79,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                         .setAction("Action", null).show();
             }
         });
-
-    }
-
-    @NonNull
-    @Override
-    public Loader onCreateLoader(int id, @Nullable Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader loader, Object data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader loader) {
 
     }
 

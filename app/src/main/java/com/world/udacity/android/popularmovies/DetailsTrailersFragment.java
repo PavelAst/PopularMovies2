@@ -26,7 +26,8 @@ public class DetailsTrailersFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<List<VideoTrailer>> {
 
     // Turn logging on or off
-    private static final boolean L = false;
+    private static final boolean L = true;
+    public static final String TAG = "MovieMethod";
 
     private static final int YOUTUBE_LOADER_ID = 25;
     public static final String MOVIE_ID = "movie_id";
@@ -40,7 +41,7 @@ public class DetailsTrailersFragment extends Fragment implements
 
     public static DetailsTrailersFragment newInstance(int id) {
         Bundle args = new Bundle();
-        args.putInt(MovieDetailsActivity.MOVIE_ID, id);
+        args.putInt(DetailsTrailersFragment.MOVIE_ID, id);
         DetailsTrailersFragment fragment = new DetailsTrailersFragment();
         fragment.setArguments(args);
 
@@ -50,13 +51,15 @@ public class DetailsTrailersFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int movieId = getArguments().getInt(MovieDetailsActivity.MOVIE_ID);
+        if (L) Log.i(TAG, " <> DetailsTrailersFragment - onCreate");
+        int movieId = getArguments().getInt(DetailsTrailersFragment.MOVIE_ID);
         loadYoutubeTrailersData(movieId);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (L) Log.i(TAG, " <> DetailsTrailersFragment - onCreateView");
         View v = inflater.inflate(R.layout.fragment_trailers, container, false);
         mYoutubeTrailersRV = v.findViewById(R.id.youtube_trailers_recycler_view);
 
@@ -87,6 +90,12 @@ public class DetailsTrailersFragment extends Fragment implements
         loaderManager.initLoader(YOUTUBE_LOADER_ID, queryBundle, this);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (L) Log.i(TAG, " <> DetailsTrailersFragment - onPause");
+    }
+
     @NonNull
     @Override
     public Loader<List<VideoTrailer>> onCreateLoader(int id, @Nullable Bundle loaderArgs) {
@@ -100,7 +109,7 @@ public class DetailsTrailersFragment extends Fragment implements
                     R.string.error_message_all,
                     Toast.LENGTH_SHORT).show();
         } else {
-            mVideoTrailerAdapter.setTrailersKeys(data);
+            mVideoTrailerAdapter.setTrailers(data);
         }
     }
 
