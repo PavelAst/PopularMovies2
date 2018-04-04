@@ -5,8 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.squareup.picasso.Picasso;
 import com.world.udacity.android.popularmovies.R;
 import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
@@ -30,7 +31,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private SimpleDraweeView mPosterImageView;
+        private ImageView mPosterImageView;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
@@ -41,7 +42,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         public void bindTo(MovieItem item) {
             String posterUrl = TheMoviedbConstants.getMoviePosterUrl("w185", item.getPosterPath());
-            mPosterImageView.setImageURI(posterUrl);
+            Picasso.with(mContext).setIndicatorsEnabled(true);
+            Picasso.with(mContext)
+                    .load(posterUrl)
+                    .placeholder(R.drawable.poster_placeholder)
+                    .into(mPosterImageView);
         }
 
         @Override

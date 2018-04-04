@@ -6,9 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.squareup.picasso.Picasso;
 import com.world.udacity.android.popularmovies.R;
 import com.world.udacity.android.popularmovies.model.VideoTrailer;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
@@ -35,7 +36,7 @@ public class VideoTrailerAdapter extends
     public class VideoTrailerViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        public final SimpleDraweeView mThumbnailYoutubeIV;
+        public final ImageView mThumbnailYoutubeIV;
         public final TextView mTrailerNameTV;
 
         public VideoTrailerViewHolder(View trailerView) {
@@ -48,8 +49,10 @@ public class VideoTrailerAdapter extends
         public void bindTo(VideoTrailer trailer) {
             String trailerThumbnailUrl = TheMoviedbConstants
                     .getYoutubeThumbnailUrl(trailer.getKey(), "mqdefault.jpg");
-            mThumbnailYoutubeIV.setImageURI(trailerThumbnailUrl);
             mTrailerNameTV.setText(trailer.getName());
+            Picasso.with(itemView.getContext())
+                    .load(trailerThumbnailUrl)
+                    .into(mThumbnailYoutubeIV);
         }
 
         @Override

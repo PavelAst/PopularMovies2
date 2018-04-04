@@ -7,9 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.squareup.picasso.Picasso;
 import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
@@ -55,17 +56,20 @@ public class DetailsDescriptionFragment extends Fragment {
                              Bundle savedInstanceState) {
         if (L) Log.i(TAG, " <> DetailsDescriptionFragment - onCreateView");
         View v = inflater.inflate(R.layout.fragment_description, container, false);
-        SimpleDraweeView posterIV = v.findViewById(R.id.iv_poster);
+        ImageView posterIV = v.findViewById(R.id.iv_poster);
         TextView movieTitleTV = v.findViewById(R.id.tv_movie_title);
         TextView releaseYearTV = v.findViewById(R.id.tv_movie_release_year);
         TextView voteAverageTV = v.findViewById(R.id.tv_vote_average);
         TextView overview = v.findViewById(R.id.tv_overview);
 
-        posterIV.setImageURI(mPosterUrl);
         movieTitleTV.setText(mTitle);
         releaseYearTV.setText(mReleaseYear);
         voteAverageTV.setText(mVoteAverage);
         overview.setText(mOverview);
+        Picasso.with(getActivity())
+                .load(mPosterUrl)
+                .placeholder(R.drawable.poster_placeholder)
+                .into(posterIV);
 
         return v;
     }

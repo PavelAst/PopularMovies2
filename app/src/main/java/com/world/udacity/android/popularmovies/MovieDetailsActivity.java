@@ -19,8 +19,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.squareup.picasso.Picasso;
 import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.model.Review;
 import com.world.udacity.android.popularmovies.model.VideoTrailer;
@@ -50,7 +51,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        SimpleDraweeView backDropIV = findViewById(R.id.iv_backdropUp);
+        ImageView backDropIV = findViewById(R.id.iv_backdropUp);
         CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.toolbar_layout);
 
         Intent intentThatStartedThisActivity = getIntent();
@@ -63,7 +64,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                 collapsingToolbar.setTitle(mMovie.getTitle());
 
                 String backdropUrl = TheMoviedbConstants.getMoviePosterUrl("w780", mMovie.getBackdropPath());
-                backDropIV.setImageURI(backdropUrl);
+                Picasso.with(this)
+                        .load(backdropUrl)
+                        .into(backDropIV);
             }
         }
 
@@ -130,14 +133,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
                     Intent intentTrailers = new Intent(GET_TRAILERS_LIST_EVENT);
                     intentTrailers.putParcelableArrayListExtra(TRAILERS, mMovie.getTrailers());
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intentTrailers);
-                    if (L) Log.i(TAG, "~~~~~>>> We send broadcast for Trailers");
                     break;
                 case REVIEW_LOADER_ID:
                     mMovie.setReviews((ArrayList<Review>) data);
                     Intent intentReviews = new Intent(GET_REVIEWS_LIST_EVENT);
                     intentReviews.putParcelableArrayListExtra(REVIEWS, mMovie.getReviews());
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intentReviews);
-                    if (L) Log.i(TAG, "~~~~~>>> We send broadcast for Reviews");
                     break;
             }
         }
