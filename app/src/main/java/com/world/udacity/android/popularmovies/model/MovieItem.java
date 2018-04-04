@@ -14,7 +14,6 @@ public class MovieItem implements Parcelable {
     private String mBackdropPath;
     private String mOverview;
     private String mReleaseDate;
-    private int mRuntime;
 
     private ArrayList<VideoTrailer> mTrailers;
     private ArrayList<Review> mReviews;
@@ -27,11 +26,10 @@ public class MovieItem implements Parcelable {
         mBackdropPath = "";
         mOverview = "No overview";
         mReleaseDate = "1900";
-        mRuntime = 0;
     }
 
     public MovieItem(int id, String title, String posterPath, double voteAverage,
-                     String backdropPath, int runtime, String overview, String releaseDate,
+                     String backdropPath, String overview, String releaseDate,
                      ArrayList<VideoTrailer> trailers, ArrayList<Review> reviews) {
         mId = id;
         mTitle = title;
@@ -40,7 +38,6 @@ public class MovieItem implements Parcelable {
         mBackdropPath = backdropPath;
         mOverview = overview;
         mReleaseDate = releaseDate;
-        mRuntime = runtime;
         mTrailers = trailers;
         mReviews = reviews;
     }
@@ -53,7 +50,6 @@ public class MovieItem implements Parcelable {
         mBackdropPath = in.readString();
         mOverview = in.readString();
         mReleaseDate = in.readString();
-        mRuntime = in.readInt();
         in.readList(new ArrayList<VideoTrailer>(), null);
         in.readList(new ArrayList<Review>(), null);
     }
@@ -84,7 +80,6 @@ public class MovieItem implements Parcelable {
         out.writeString(mBackdropPath);
         out.writeString(mOverview);
         out.writeString(mReleaseDate);
-        out.writeInt(mRuntime);
         out.writeList(mTrailers);
         out.writeList(mReviews);
     }
@@ -143,14 +138,6 @@ public class MovieItem implements Parcelable {
 
     public void setReleaseDate(String releaseDate) {
         mReleaseDate = releaseDate;
-    }
-
-    public int getRuntime() {
-        return mRuntime;
-    }
-
-    public void setRuntime(int runtime) {
-        mRuntime = runtime;
     }
 
     public ArrayList<VideoTrailer> getTrailers() {

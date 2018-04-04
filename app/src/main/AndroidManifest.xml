@@ -26,6 +26,13 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+
+        <!-- Register the MovieContentProvider -->
+        <provider
+            android:name="com.world.udacity.android.popularmovies.data.MovieContentProvider"
+            android:authorities="com.world.udacity.android.popularmovies"
+            android:exported="false" />
+
     </application>
 
 </manifest>
