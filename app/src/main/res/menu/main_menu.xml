@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/action_label"
-        android:title="@string/sort_by_menu_label"
+        android:title="@string/show_menu_label"
         app:showAsAction="never" />
 
     <group
@@ -22,6 +22,10 @@
         <item
             android:id="@+id/action_most_top_rated"
             android:title="@string/action_top_rated"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_my_favorites"
+            android:title="@string/action_my_favorites"
             app:showAsAction="never" />
 
     </group>

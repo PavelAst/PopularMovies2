@@ -32,7 +32,7 @@ public class TheMoviedbConstants {
 
     //  https://api.themoviedb.org/3/movie/popular?api_key=API_KEY&page=1&language=en
     public static String getMoviesUrl(Most mostFilm, String lang, int page) {
-        String mostSegment = (mostFilm == Most.POPULAR) ? POPULAR_SEGMENT : TOP_RATED_SEGMENT;
+        String mostSegment = (mostFilm == Most.TOP_RATED) ? TOP_RATED_SEGMENT : POPULAR_SEGMENT;
         Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
                 .appendEncodedPath(MOVIE_SEGMENT)
                 .appendEncodedPath(mostSegment)

@@ -230,10 +230,19 @@ public class MainActivity extends AppCompatActivity implements
         /* Use the inflater's inflate method to inflate our menu layout to this menu */
         inflater.inflate(R.menu.main_menu, menu);
 
-        Most sortOption = SortPreferences.getSortCriteria(this);
-        MenuItem menuItem = (sortOption == Most.POPULAR) ?
-                menu.findItem(R.id.action_most_popular) : menu.findItem(R.id.action_most_top_rated);
-        menuItem.setChecked(true);
+        Most showOption = SortPreferences.getSortCriteria(this);
+
+        switch (showOption) {
+            case POPULAR:
+                menu.findItem(R.id.action_most_popular).setChecked(true);
+                break;
+            case TOP_RATED:
+                menu.findItem(R.id.action_most_top_rated).setChecked(true);
+                break;
+            case FAVORITES:
+                menu.findItem(R.id.action_my_favorites).setChecked(true);
+                break;
+        }
 
         /* Return true so that the menu is displayed in the Toolbar */
         return true;
@@ -243,12 +252,15 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_most_popular || id == R.id.action_most_top_rated) {
+        if (id == R.id.action_most_popular ||
+                id == R.id.action_most_top_rated ||
+                id == R.id.action_my_favorites) {
             Most sortOption = SortPreferences.getSortCriteria(this);
 
             // The same option was chosen
             if ((sortOption == Most.POPULAR && id == R.id.action_most_popular) ||
-                    (sortOption == Most.TOP_RATED && id == R.id.action_most_top_rated)) {
+                    (sortOption == Most.TOP_RATED && id == R.id.action_most_top_rated) ||
+                    (sortOption == Most.FAVORITES && id == R.id.action_my_favorites)) {
                 return true;
             }
 
@@ -257,7 +269,18 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 item.setChecked(true);
             }
-            sortOption = (id == R.id.action_most_popular) ? Most.POPULAR : Most.TOP_RATED;
+            switch (id) {
+                case R.id.action_most_popular:
+                    sortOption = Most.POPULAR;
+                    break;
+                case R.id.action_most_top_rated:
+                    sortOption = Most.TOP_RATED;
+                    break;
+                case R.id.action_my_favorites:
+//                    sortOption = Most.FAVORITES;
+                    sortOption = Most.POPULAR;
+                    break;
+            }
             SortPreferences.setSortCriteria(this, sortOption);
             mLastPage = 1;
             mFirstVisibleItemPosition = 0;
