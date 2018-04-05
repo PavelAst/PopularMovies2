@@ -1,6 +1,9 @@
 package com.world.udacity.android.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +25,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+import com.world.udacity.android.popularmovies.data.MovieContract;
 import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.model.Review;
 import com.world.udacity.android.popularmovies.model.VideoTrailer;
@@ -46,6 +50,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     public static final String REVIEWS = "reviews";
 
     private MovieItem mMovie;
+    private boolean mIsFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,14 +90,29 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         adapter.addFragment(DetailsReviewsFragment.newInstance(mMovie), "REVIEWS");
         viewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                String message = "Something went wrong. Please try again.";
+                mIsFavorite = !mIsFavorite;
+                if (mIsFavorite) {
+                    fab.setImageResource(R.drawable.ic_heart);
+                    // Add to database
+                    if (addTofavorites(mMovie)) {
+                        message = "Movie added to favorites";
+                    }
+                } else {
+                    fab.setImageResource(R.drawable.ic_heart_outline);
+                    // Remove from database
+                    if (removeFromFavorites(mMovie.getId()) > 0) {
+                        message = "Movie removed from favorites";
+                    }
+                }
+                Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
             }
         });
@@ -101,6 +121,15 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         getSupportLoaderManager().initLoader(REVIEW_LOADER_ID, null, this);
 
         loadAdditionalData();
+        if (checkFavorite(mMovie.getId())) {
+            mIsFavorite = true;
+            fab.setImageResource(R.drawable.ic_heart);
+            Log.i(TAG, "<<<< FAVORITE >>>>>");
+        } else {
+            mIsFavorite = false;
+            fab.setImageResource(R.drawable.ic_heart_outline);
+            Log.i(TAG, "---- SIMPLE -----");
+        }
     }
 
     private void loadAdditionalData() {
@@ -179,4 +208,45 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         }
     }
 
+    /*
+     * *** Work with ContentProvider ***
+     */
+
+    private boolean checkFavorite(int movieId) {
+        // Build appropriate uri with String row id appended
+        String stringId = Integer.toString(movieId);
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(stringId).build();
+
+        Cursor cursor = getContentResolver().query(uri, null,
+                null, null, null);
+
+        return (cursor != null && cursor.getCount() >= 1);
+    }
+
+    private boolean addTofavorites(MovieItem movie) {
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+
+        ContentValues values = new ContentValues();
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.getId());
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, movie.getTitle());
+        values.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
+        values.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
+        values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, movie.getBackdropPath());
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW, movie.getOverview());
+        values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+
+        // Insert the content values via a ContentResolver
+        Uri newUri = getContentResolver().insert(uri, values);
+        return (newUri != null);
+    }
+
+    private int removeFromFavorites(int movieId) {
+        // Build appropriate uri with String row id appended
+        String stringId = Integer.toString(movieId);
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(stringId).build();
+
+        return getContentResolver().delete(uri, null, null);
+    }
 }
