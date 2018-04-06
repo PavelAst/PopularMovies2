@@ -1,5 +1,6 @@
 package com.world.udacity.android.popularmovies.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,6 +15,7 @@ public class MovieItem implements Parcelable {
     private String mBackdropPath;
     private String mOverview;
     private String mReleaseDate;
+    private Bitmap mPosterImage;
 
     private ArrayList<VideoTrailer> mTrailers;
     private ArrayList<Review> mReviews;
@@ -158,6 +160,14 @@ public class MovieItem implements Parcelable {
 
     public String getReleaseYear() {
         return mReleaseDate.substring(0, 4);
+    }
+
+    public Bitmap getPosterImage() {
+        return mPosterImage;
+    }
+
+    public void setPosterImage(Bitmap posterImage) {
+        mPosterImage = posterImage;
     }
 
     @Override

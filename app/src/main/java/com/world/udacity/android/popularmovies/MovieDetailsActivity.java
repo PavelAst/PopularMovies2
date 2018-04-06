@@ -3,6 +3,7 @@ package com.world.udacity.android.popularmovies;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,10 +32,12 @@ import com.world.udacity.android.popularmovies.model.Review;
 import com.world.udacity.android.popularmovies.model.VideoTrailer;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieDetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
+public class MovieDetailsActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks, DetailsDescriptionFragment.LoadImageHandler {
 
     // Turn logging on or off
     private static final boolean L = true;
@@ -209,6 +212,17 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
     }
 
     /*
+     * *** Work with DetailsDescriptionFragment.LoadImageHandler ***
+     */
+
+    @Override
+    public void onPosterLoaded(Bitmap image) {
+        mMovie.setPosterImage(image);
+        Log.i(TAG, "-> height: " + mMovie.getPosterImage().getHeight() +
+                ", width: " + mMovie.getPosterImage().getWidth());
+    }
+
+    /*
      * *** Work with ContentProvider ***
      */
 
@@ -235,6 +249,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements LoaderMan
         values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, movie.getBackdropPath());
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW, movie.getOverview());
         values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        mMovie.getPosterImage().compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] blob = stream.toByteArray();
+
+        values.put(MovieContract.MovieEntry.COLUMN_POSTER_IMAGE, blob);
 
         // Insert the content values via a ContentResolver
         Uri newUri = getContentResolver().insert(uri, values);
