@@ -25,7 +25,7 @@ public class DetailsDescriptionFragment extends Fragment {
     }
 
     // Turn logging on or off
-    private static final boolean L = true;
+    private static final boolean L = false;
     public static final String TAG = "MovieMethod";
 
     String mTitle;

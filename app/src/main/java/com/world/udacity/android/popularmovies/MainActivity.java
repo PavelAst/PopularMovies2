@@ -2,12 +2,17 @@ package com.world.udacity.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -24,26 +29,30 @@ import android.widget.TextView;
 
 import com.world.udacity.android.popularmovies.adapters.MovieAdapter;
 import com.world.udacity.android.popularmovies.adapters.MovieAdapter.MovieAdapterOnClickHandler;
+import com.world.udacity.android.popularmovies.data.MovieContract;
 import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.Most;
 import com.world.udacity.android.popularmovies.utils.SortPreferences;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         MovieAdapterOnClickHandler,
-        LoaderCallbacks<List<MovieItem>> {
+        LoaderCallbacks {
 
     // Turn logging on or off
-    private static final boolean L = false;
+    private static final boolean L = true;
 
-    private static final String TAG = "MovieMainActivity";
+    public static final String TAG = "MovieMainActivity";
     /* A constant to save and restore the page  */
     public static final String SEARCH_QUERY_PAGE = "query_page";
     public static final String SEARCH_QUERY_SORT = "query_sort";
     private static final int COLUMN_WIDTH = 180;
 
-    private static final int MOVIE_LOADER_ID = 64;
+    private static final int NETWORK_LOADER_ID = 61;
+    private static final int CURSOR_LOADER_ID = 62;
+    int mLoaderId = NETWORK_LOADER_ID;
 
     private RecyclerView mMoviesRecyclerView;
     private ProgressBar mLoadingIndicator;
@@ -58,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "*** MainActivity - onCreate");
 
         setContentView(R.layout.activity_main);
 
@@ -87,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements
                 mFirstVisibleItemPosition = gridLayoutManager.findLastCompletelyVisibleItemPosition();
                 int itemsCount = gridLayoutManager.getItemCount();
 
-                if (!recyclerView.canScrollVertically(1) && itemsCount > 0) {
+                if (!recyclerView.canScrollVertically(1) && itemsCount > 0 && mLoaderId == NETWORK_LOADER_ID) {
                     mLastPage += 1;
                     if (L)
                         Log.i(TAG, "** " + itemsCount + " In onScrolled, mLastPage = " + mLastPage);
@@ -116,42 +126,59 @@ public class MainActivity extends AppCompatActivity implements
                 });
 
         /*
-         * From MainActivity, we have implemented the LoaderCallbacks interface with the type of
-         * String array. (implements LoaderCallbacks<String[]>) The variable callback is passed
-         * to the call to initLoader below. This means that whenever the loaderManager has
-         * something to notify us of, it will do so through this callback.
-         */
-        LoaderCallbacks<List<MovieItem>> callback = MainActivity.this;
-
-        /*
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
          * created and (if the activity/fragment is currently started) starts the loader. Otherwise
          * the last created loader is re-used.
          */
-        getSupportLoaderManager().initLoader(MOVIE_LOADER_ID, null, callback);
+        Most sortOption = SortPreferences.getSortCriteria(this);
+        mLoaderId = (sortOption == Most.FAVORITES) ? CURSOR_LOADER_ID : NETWORK_LOADER_ID;
+        getSupportLoaderManager().initLoader(mLoaderId, null, this);
 
         loadMovieItemsData();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (L) Log.i(TAG, "*** MainActivity - onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (L) Log.i(TAG, "*** MainActivity - onResume");
+        getSupportLoaderManager().restartLoader(mLoaderId, null, this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (L) Log.i(TAG, "*** MainActivity - onPause");
+    }
+
     private void loadMovieItemsData() {
-        if (!isOnline()) {
+        Most sortOption = SortPreferences.getSortCriteria(this);
+
+        if (!isOnline() && sortOption != Most.FAVORITES) {
             showErrorMessage(R.string.error_message_network);
             return;
         }
-        if (L) Log.i(TAG, "** In loadMovieItemsData, mLastPage = " + mLastPage);
+        Log.i(TAG, "*** MainActivity - In loadMovieItemsData, mLastPage = " + mLastPage);
 
         showMovieItemsView();
 
-        Most sortOption = SortPreferences.getSortCriteria(this);
         Bundle queryBundle = new Bundle();
-        queryBundle.putInt(SEARCH_QUERY_PAGE, mLastPage);
-        queryBundle.putSerializable(SEARCH_QUERY_SORT, sortOption);
+        if (sortOption != Most.FAVORITES) {
+            queryBundle.putInt(SEARCH_QUERY_PAGE, mLastPage);
+            queryBundle.putSerializable(SEARCH_QUERY_SORT, sortOption);
+        }
 
         LoaderManager loaderManager = getSupportLoaderManager();
-        loaderManager.restartLoader(MOVIE_LOADER_ID, queryBundle, this);
+        loaderManager.restartLoader(mLoaderId, queryBundle, this);
     }
 
     private void setupAdapter(List<MovieItem> items) {
+        if (L) Log.i(TAG, "*** MainActivity - setupAdapter");
         mMovieAdapter.setMovieItems(items);
         mMoviesRecyclerView.scrollToPosition(mFirstVisibleItemPosition);
         mMoviesRecyclerView.scrollBy(mX, mY);
@@ -181,39 +208,101 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public Loader<List<MovieItem>> onCreateLoader(int id, final Bundle loaderArgs) {
-        if (L) Log.i(TAG, "<> In onCreateLoader");
-        return new AppMovieLoader(this, loaderArgs, new AppMovieLoader.LoaderOnStartHandler() {
-            @Override
-            public void onLoad(boolean start) {
-                mLoadingIndicator.setVisibility(View.VISIBLE);
-            }
-        });
-    }
+    public Loader onCreateLoader(int id, final Bundle loaderArgs) {
+        if (L) Log.i(TAG, "*** MainActivity - onCreateLoader");
 
-    @Override
-    public void onLoadFinished(@NonNull Loader<List<MovieItem>> loader, List<MovieItem> data) {
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
-
-        if (null == data) {
-            showErrorMessage(R.string.error_message_all);
-        } else {
-            showMovieItemsView();
-            setupAdapter(data);
+        switch (id) {
+            case NETWORK_LOADER_ID:
+                return new AppMovieNetworkLoader(this, loaderArgs, new AppMovieNetworkLoader.LoaderOnStartHandler() {
+                    @Override
+                    public void onLoad(boolean start) {
+                        mLoadingIndicator.setVisibility(View.VISIBLE);
+                    }
+                });
+            case CURSOR_LOADER_ID:
+                Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+                return new CursorLoader(this, uri, null,
+                        null, null, null);
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + id);
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<MovieItem>> loader) {
+    public void onLoadFinished(@NonNull Loader loader, Object data) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        if (L) Log.i(TAG, "*** MainActivity - onLoadFinished");
 
+        if (null == data) {
+            if (L) Log.i(TAG, "### Error in Loader , id = " + loader.getId());
+            showErrorMessage(R.string.error_message_all);
+        } else {
+            showMovieItemsView();
+            List<MovieItem> movies = null;
+
+            switch (loader.getId()) {
+                case NETWORK_LOADER_ID:
+                    movies = (List<MovieItem>) data;
+                    break;
+                case CURSOR_LOADER_ID:
+                    movies = getMoviesFromCursor((Cursor) data);
+                    break;
+            }
+            setupAdapter(movies);
+        }
     }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+        loader = null;
+        if (L) Log.i(TAG, "*** MainActivity - onLoaderReset");
+    }
+
+    private List<MovieItem> getMoviesFromCursor(Cursor cursor) {
+        if (L) Log.i(TAG, "*** MainActivity - getMoviesFromCursor");
+        List<MovieItem> movies = new ArrayList<>();
+        if (cursor.getCount() == 0) {
+            return null;
+        }
+        if (cursor.moveToFirst()) {
+            do {
+                MovieItem movie = new MovieItem();
+                movie.setId(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID)));
+                movie.setTitle(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE)));
+                movie.setVoteAverage(cursor.getDouble(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
+                movie.setPosterPath(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
+                movie.setBackdropPath(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH)));
+                movie.setOverview(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW)));
+                movie.setReleaseDate(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
+
+                byte[] imageBytes = cursor.getBlob(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_IMAGE));
+                movie.setPosterImage(getBitmap(imageBytes));
+
+                movies.add(movie);
+
+            } while (cursor.moveToNext());
+        }
+
+        return movies;
+    }
+
+    private Bitmap getBitmap(byte[] bytes) {
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    /*
+        void setPosterFromCursor(Cursor cursor) {
+    }
+     */
 
     /**
      * This method is used when we are resetting data, so that at one point in time during a
      * refresh of our data, you can see that there is no data showing.
      */
     private void invalidateData() {
-        setupAdapter(null);
+        if (L) Log.i(TAG, "*** MainActivity - invalidateData");
+//        setupAdapter(null);
+        mMovieAdapter.clearMovieItems();
     }
 
     protected boolean isOnline() {
@@ -264,6 +353,7 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             }
 
+            getSupportLoaderManager().destroyLoader(mLoaderId);
             if (item.isChecked()) {
                 item.setChecked(false);
             } else {
@@ -272,13 +362,15 @@ public class MainActivity extends AppCompatActivity implements
             switch (id) {
                 case R.id.action_most_popular:
                     sortOption = Most.POPULAR;
+                    mLoaderId = NETWORK_LOADER_ID;
                     break;
                 case R.id.action_most_top_rated:
+                    mLoaderId = NETWORK_LOADER_ID;
                     sortOption = Most.TOP_RATED;
                     break;
                 case R.id.action_my_favorites:
-//                    sortOption = Most.FAVORITES;
-                    sortOption = Most.POPULAR;
+                    mLoaderId = CURSOR_LOADER_ID;
+                    sortOption = Most.FAVORITES;
                     break;
             }
             SortPreferences.setSortCriteria(this, sortOption);

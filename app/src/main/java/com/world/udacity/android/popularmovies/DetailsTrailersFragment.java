@@ -53,7 +53,7 @@ public class DetailsTrailersFragment extends Fragment {
     private BroadcastReceiver mUpdateUIReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Get intent message - trailers ************");
+            if (L) Log.d(TAG, "Get intent message - trailers ************");
             if (intent.getAction().equalsIgnoreCase(MovieDetailsActivity.GET_TRAILERS_LIST_EVENT)) {
                 mTrailers = intent.getParcelableArrayListExtra(MovieDetailsActivity.TRAILERS);
                 showYoutubeTrailersView();

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * A custom Loader that loads all movies.
  */
-public class AppMovieLoader extends AsyncTaskLoader<List<MovieItem>> {
+public class AppMovieNetworkLoader extends AsyncTaskLoader<List<MovieItem>> {
 
     public interface LoaderOnStartHandler {
         void onLoad(boolean start);
@@ -23,7 +23,7 @@ public class AppMovieLoader extends AsyncTaskLoader<List<MovieItem>> {
 
     private List<MovieItem> mMovieItems = null;
 
-    public AppMovieLoader(Context context, Bundle args, LoaderOnStartHandler onStartHandler) {
+    public AppMovieNetworkLoader(Context context, Bundle args, LoaderOnStartHandler onStartHandler) {
         super(context);
         mArgs = args;
         mOnStartHandler = onStartHandler;

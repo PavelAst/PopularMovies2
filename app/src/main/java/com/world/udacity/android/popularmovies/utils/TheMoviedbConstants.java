@@ -50,7 +50,7 @@ public class TheMoviedbConstants {
                 .appendEncodedPath(size)
                 .appendEncodedPath(path)
                 .build();
-//        if (L) Log.i(TAG, "getMoviePosterUrl - " + builtUri.toString());
+        if (L) Log.i(TAG, "getMoviePosterUrl - " + builtUri.toString());
         return builtUri.toString();
     }
 

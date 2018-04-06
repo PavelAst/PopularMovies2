@@ -127,11 +127,11 @@ public class MovieDetailsActivity extends AppCompatActivity
         if (checkFavorite(mMovie.getId())) {
             mIsFavorite = true;
             fab.setImageResource(R.drawable.ic_heart);
-            Log.i(TAG, "<<<< FAVORITE >>>>>");
+            if (L) Log.i(TAG, "<<<< FAVORITE >>>>>");
         } else {
             mIsFavorite = false;
             fab.setImageResource(R.drawable.ic_heart_outline);
-            Log.i(TAG, "---- SIMPLE -----");
+            if (L) Log.i(TAG, "---- SIMPLE -----");
         }
     }
 
@@ -218,7 +218,7 @@ public class MovieDetailsActivity extends AppCompatActivity
     @Override
     public void onPosterLoaded(Bitmap image) {
         mMovie.setPosterImage(image);
-        Log.i(TAG, "-> height: " + mMovie.getPosterImage().getHeight() +
+        if (L) Log.i(TAG, "-> height: " + mMovie.getPosterImage().getHeight() +
                 ", width: " + mMovie.getPosterImage().getWidth());
     }
 

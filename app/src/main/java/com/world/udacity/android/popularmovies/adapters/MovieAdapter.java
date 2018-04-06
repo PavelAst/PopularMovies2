@@ -2,6 +2,7 @@ package com.world.udacity.android.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,15 +44,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public void bindTo(MovieItem item) {
             String posterUrl = TheMoviedbConstants.getMoviePosterUrl("w185", item.getPosterPath());
             Picasso.with(mContext).setIndicatorsEnabled(true);
-            Picasso.with(mContext)
-                    .load(posterUrl)
-                    .placeholder(R.drawable.poster_placeholder)
-                    .into(mPosterImageView);
+            if (item.getPosterImage() != null) {
+                mPosterImageView.setImageBitmap(item.getPosterImage());
+            } else {
+                Picasso.with(mContext)
+                        .load(posterUrl)
+                        .placeholder(R.drawable.poster_placeholder)
+                        .into(mPosterImageView);
+            }
         }
 
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
+            Log.d("MovieAdapter", "<!!!> onClick, adapterPosition: " + adapterPosition + " <>");
             MovieItem movie = mMovieItems.get(adapterPosition);
             if (mClickHandler != null) {
                 mClickHandler.onClick(movie);
@@ -79,11 +85,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public void setMovieItems(List<MovieItem> movieItems) {
-        if (mMovieItems == null || mMovieItems.isEmpty() || movieItems == null) {
+//        if (mMovieItems == null || mMovieItems.isEmpty() || movieItems == null) {
+        if (mMovieItems == null) {
             mMovieItems = movieItems;
         } else {
             mMovieItems.addAll(movieItems);
         }
+        Log.d("MovieAdapter", "<!!!> Current count: " + getItemCount() + " <>");
+        notifyDataSetChanged();
+    }
+
+    public void clearMovieItems() {
+        mMovieItems = null;
         notifyDataSetChanged();
     }
 }

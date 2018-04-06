@@ -54,7 +54,7 @@ public class DetailsReviewsFragment extends Fragment {
                 mReviews = intent.getParcelableArrayListExtra(MovieDetailsActivity.REVIEWS);
 
                 showMovieReviewsView();
-                Log.d(TAG, "Get intent message - reviews ************" + mReviews);
+                if (L) Log.d(TAG, "Get intent message - reviews ************" + mReviews);
                 mReviewAdapter.setReviews(mReviews);
             }
         }
