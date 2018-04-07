@@ -2,6 +2,7 @@ package com.world.udacity.android.popularmovies.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,8 +49,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public void bindTo(MovieItem item) {
             String posterUrl = TheMoviedbConstants.getMoviePosterUrl("w185", item.getPosterPath());
 
-            Picasso.with(mContext).setIndicatorsEnabled(true);
-
             Picasso.with(mContext)
                     .load(posterUrl)
                     .placeholder(R.drawable.poster_placeholder)
@@ -68,7 +67,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     @Override
-    public MovieViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.movie_poster,
                 viewGroup, false);
 

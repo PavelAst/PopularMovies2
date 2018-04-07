@@ -1,8 +1,6 @@
 package com.world.udacity.android.popularmovies.data;
 
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import com.world.udacity.android.popularmovies.model.MovieItem;
 

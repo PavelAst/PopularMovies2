@@ -3,7 +3,6 @@ package com.world.udacity.android.popularmovies;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,7 +31,6 @@ import com.world.udacity.android.popularmovies.model.Review;
 import com.world.udacity.android.popularmovies.model.VideoTrailer;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +38,7 @@ public class MovieDetailsActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks {
 
     // Turn logging on or off
-    private static final boolean L = true;
+    private static final boolean L = false;
 
     private static final String TAG = "MovieDetailsActivity";
     public static final String MOVIE_ITEM = "movie_item_object";

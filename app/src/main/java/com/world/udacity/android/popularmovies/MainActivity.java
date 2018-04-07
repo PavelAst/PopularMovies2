@@ -7,8 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -41,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements
         LoaderCallbacks {
 
     // Turn logging on or off
-    private static final boolean L = true;
+    private static final boolean L = false;
 
     public static final String TAG = "MovieMainActivity";
     /* A constant to save and restore the page  */
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements
     private RecyclerView mMoviesRecyclerView;
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessageDisplay;
-    Parcelable mListState;
 
     private MovieAdapter mMovieAdapter;
     private int mLastPage = 1;
@@ -68,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "*** MainActivity - onCreate");
+        if (L) Log.i(TAG, "*** MainActivity - onCreate");
 
         setContentView(R.layout.activity_main);
 
@@ -138,30 +135,6 @@ public class MainActivity extends AppCompatActivity implements
         loadMovieItemsData();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mListState = mMoviesRecyclerView.getLayoutManager().onSaveInstanceState();
-        outState.putParcelable(LIST_STATE_KEY, mListState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mListState != null) {
-            mMoviesRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
-        }
-    }
-
     private void loadMovieItemsData() {
         Most sortOption = SortPreferences.getSortCriteria(this);
 
@@ -169,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements
             showErrorMessage(R.string.error_message_network);
             return;
         }
-        Log.i(TAG, "*** MainActivity - In loadMovieItemsData, mLastPage = " + mLastPage);
+        if (L) Log.i(TAG, "*** MainActivity - In loadMovieItemsData, mLastPage = " + mLastPage);
 
         showMovieItemsView();
 
@@ -212,15 +185,6 @@ public class MainActivity extends AppCompatActivity implements
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
         mErrorMessageDisplay.setText(resid);
     }
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        // save RecyclerView state
-//        mBundleRecyclerViewState = new Bundle();
-//        Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
-//        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
-//    }
 
     @Override
     public Loader onCreateLoader(int id, final Bundle loaderArgs) {
@@ -273,18 +237,12 @@ public class MainActivity extends AppCompatActivity implements
         if (L) Log.i(TAG, "*** MainActivity - onLoaderReset");
     }
 
-    /*
-        void setPosterFromCursor(Cursor cursor) {
-    }
-     */
-
     /**
      * This method is used when we are resetting data, so that at one point in time during a
      * refresh of our data, you can see that there is no data showing.
      */
     private void invalidateData() {
         if (L) Log.i(TAG, "*** MainActivity - invalidateData");
-//        setupAdapter(null);
         mMovieAdapter.clearMovieItems();
     }
 

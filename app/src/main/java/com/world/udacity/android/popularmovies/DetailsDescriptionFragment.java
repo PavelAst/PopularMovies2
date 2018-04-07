@@ -2,7 +2,6 @@ package com.world.udacity.android.popularmovies;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,14 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
 public class DetailsDescriptionFragment extends Fragment {
 
     // Turn logging on or off
-    private static final boolean L = true;
+    private static final boolean L = false;
     public static final String TAG = "MovieMethod";
 
     String mTitle;
@@ -77,23 +75,6 @@ public class DetailsDescriptionFragment extends Fragment {
         releaseYearTV.setText(mReleaseYear);
         voteAverageTV.setText(mVoteAverage);
         overview.setText(mOverview);
-
-        Target target = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                posterIV.setImageBitmap(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                posterIV.setImageDrawable(placeHolderDrawable);
-            }
-        };
 
         Picasso.with(getActivity())
                 .load(mPosterUrl)
