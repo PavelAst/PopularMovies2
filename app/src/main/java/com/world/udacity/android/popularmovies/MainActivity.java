@@ -3,12 +3,12 @@ package com.world.udacity.android.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -34,7 +34,6 @@ import com.world.udacity.android.popularmovies.model.MovieItem;
 import com.world.udacity.android.popularmovies.utils.Most;
 import com.world.udacity.android.popularmovies.utils.SortPreferences;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
@@ -49,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String SEARCH_QUERY_PAGE = "query_page";
     public static final String SEARCH_QUERY_SORT = "query_sort";
     private static final int COLUMN_WIDTH = 180;
+    private static final String LIST_STATE_KEY = "list_state_ley";
 
     private static final int NETWORK_LOADER_ID = 61;
     private static final int CURSOR_LOADER_ID = 62;
@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements
     private RecyclerView mMoviesRecyclerView;
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessageDisplay;
+    Parcelable mListState;
 
     private MovieAdapter mMovieAdapter;
     private int mLastPage = 1;
@@ -138,22 +139,27 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (L) Log.i(TAG, "*** MainActivity - onStart");
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mListState = mMoviesRecyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(LIST_STATE_KEY, mListState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (L) Log.i(TAG, "*** MainActivity - onResume");
-        getSupportLoaderManager().restartLoader(mLoaderId, null, this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (L) Log.i(TAG, "*** MainActivity - onPause");
+        if (mListState != null) {
+            mMoviesRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+        }
     }
 
     private void loadMovieItemsData() {
@@ -179,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setupAdapter(List<MovieItem> items) {
         if (L) Log.i(TAG, "*** MainActivity - setupAdapter");
-        mMovieAdapter.setMovieItems(items);
+        mMovieAdapter.setMovieItems(items, mLastPage);
         mMoviesRecyclerView.scrollToPosition(mFirstVisibleItemPosition);
         mMoviesRecyclerView.scrollBy(mX, mY);
     }
@@ -207,6 +213,15 @@ public class MainActivity extends AppCompatActivity implements
         mErrorMessageDisplay.setText(resid);
     }
 
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        // save RecyclerView state
+//        mBundleRecyclerViewState = new Bundle();
+//        Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+//        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
+//    }
+
     @Override
     public Loader onCreateLoader(int id, final Bundle loaderArgs) {
         if (L) Log.i(TAG, "*** MainActivity - onCreateLoader");
@@ -231,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(@NonNull Loader loader, Object data) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
-        if (L) Log.i(TAG, "*** MainActivity - onLoadFinished");
+        if (L) Log.i(TAG, "*** MainActivity - onLoadFinished, mLastPage = " + mLastPage);
 
         if (null == data) {
             if (L) Log.i(TAG, "### Error in Loader , id = " + loader.getId());
@@ -243,12 +258,12 @@ public class MainActivity extends AppCompatActivity implements
             switch (loader.getId()) {
                 case NETWORK_LOADER_ID:
                     movies = (List<MovieItem>) data;
+                    setupAdapter(movies);
                     break;
                 case CURSOR_LOADER_ID:
-                    movies = getMoviesFromCursor((Cursor) data);
+                    mMovieAdapter.swapCursor((Cursor) data);
                     break;
             }
-            setupAdapter(movies);
         }
     }
 
@@ -256,38 +271,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoaderReset(Loader loader) {
         loader = null;
         if (L) Log.i(TAG, "*** MainActivity - onLoaderReset");
-    }
-
-    private List<MovieItem> getMoviesFromCursor(Cursor cursor) {
-        if (L) Log.i(TAG, "*** MainActivity - getMoviesFromCursor");
-        List<MovieItem> movies = new ArrayList<>();
-        if (cursor.getCount() == 0) {
-            return null;
-        }
-        if (cursor.moveToFirst()) {
-            do {
-                MovieItem movie = new MovieItem();
-                movie.setId(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID)));
-                movie.setTitle(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE)));
-                movie.setVoteAverage(cursor.getDouble(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
-                movie.setPosterPath(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
-                movie.setBackdropPath(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH)));
-                movie.setOverview(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW)));
-                movie.setReleaseDate(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
-
-                byte[] imageBytes = cursor.getBlob(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_IMAGE));
-                movie.setPosterImage(getBitmap(imageBytes));
-
-                movies.add(movie);
-
-            } while (cursor.moveToNext());
-        }
-
-        return movies;
-    }
-
-    private Bitmap getBitmap(byte[] bytes) {
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
     /*

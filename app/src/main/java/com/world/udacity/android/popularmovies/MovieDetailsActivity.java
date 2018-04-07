@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MovieDetailsActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks, DetailsDescriptionFragment.LoadImageHandler {
+        implements LoaderManager.LoaderCallbacks {
 
     // Turn logging on or off
     private static final boolean L = true;
@@ -212,17 +212,6 @@ public class MovieDetailsActivity extends AppCompatActivity
     }
 
     /*
-     * *** Work with DetailsDescriptionFragment.LoadImageHandler ***
-     */
-
-    @Override
-    public void onPosterLoaded(Bitmap image) {
-        mMovie.setPosterImage(image);
-        if (L) Log.i(TAG, "-> height: " + mMovie.getPosterImage().getHeight() +
-                ", width: " + mMovie.getPosterImage().getWidth());
-    }
-
-    /*
      * *** Work with ContentProvider ***
      */
 
@@ -249,12 +238,6 @@ public class MovieDetailsActivity extends AppCompatActivity
         values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, movie.getBackdropPath());
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW, movie.getOverview());
         values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        mMovie.getPosterImage().compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] blob = stream.toByteArray();
-
-        values.put(MovieContract.MovieEntry.COLUMN_POSTER_IMAGE, blob);
 
         // Insert the content values via a ContentResolver
         Uri newUri = getContentResolver().insert(uri, values);

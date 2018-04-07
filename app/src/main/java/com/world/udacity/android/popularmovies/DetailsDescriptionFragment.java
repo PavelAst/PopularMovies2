@@ -20,12 +20,8 @@ import com.world.udacity.android.popularmovies.utils.TheMoviedbConstants;
 
 public class DetailsDescriptionFragment extends Fragment {
 
-    public interface LoadImageHandler {
-        void onPosterLoaded(Bitmap image);
-    }
-
     // Turn logging on or off
-    private static final boolean L = false;
+    private static final boolean L = true;
     public static final String TAG = "MovieMethod";
 
     String mTitle;
@@ -34,7 +30,6 @@ public class DetailsDescriptionFragment extends Fragment {
     String mVoteAverage;
     String mOverview;
     Bitmap mPosterimage;
-    private LoadImageHandler mLoadImageHandler;
 
     public DetailsDescriptionFragment() {
         // Required empty public constructor
@@ -52,7 +47,6 @@ public class DetailsDescriptionFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mLoadImageHandler = (LoadImageHandler) context;
     }
 
     @Override
@@ -84,11 +78,10 @@ public class DetailsDescriptionFragment extends Fragment {
         voteAverageTV.setText(mVoteAverage);
         overview.setText(mOverview);
 
-        final Target target = new Target() {
+        Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 posterIV.setImageBitmap(bitmap);
-                mLoadImageHandler.onPosterLoaded(bitmap);
             }
 
             @Override
@@ -102,16 +95,11 @@ public class DetailsDescriptionFragment extends Fragment {
             }
         };
 
-        if (mPosterimage != null) {
-            if (L) Log.i(TAG, "<> We have Bitmap Image!");
-            posterIV.setImageBitmap(mPosterimage);
-        } else {
-            if (L) Log.i(TAG, "<> Load the Image with Picasso");
-            Picasso.with(getActivity())
-                    .load(mPosterUrl)
-                    .placeholder(R.drawable.poster_placeholder)
-                    .into(target);
-        }
+        Picasso.with(getActivity())
+                .load(mPosterUrl)
+                .placeholder(R.drawable.poster_placeholder)
+                .into(posterIV);
+
         return v;
     }
 
@@ -124,6 +112,5 @@ public class DetailsDescriptionFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mLoadImageHandler = null;
     }
 }
